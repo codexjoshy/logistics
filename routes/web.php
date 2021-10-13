@@ -1,0 +1,92 @@
+<?php
+
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PlaceRequestController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RiderController;
+use App\Http\Controllers\RouteController;
+use App\Http\Controllers\TransactionController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Support\Facades\Route;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+
+require __DIR__.'/auth.php';
+
+Route::get('payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'home'] )->name('dashboard');
+    
+    Route::middleware('can:company')->group(function () {
+        Route::get('company/profile', [CompanyController::class, 'create'])->name('company.profile.create');
+        Route::post('company/profile/store', [CompanyController::class, 'store'])->name('company.profile.store');
+        Route::post('company/profile/update/{company}', [CompanyController::class, 'update'])->name('company.profile.update');
+        Route::get('company/riders/create/', [RiderController::class, 'create'])->name('company.riders.create');
+        Route::post('company/riders/store/{company}', [RiderController::class, 'store'])->name('company.riders.store');
+        Route::post('company/{company}/riders/update/{rider}', [RiderController::class, 'update'])->name('company.riders.update');
+        Route::get('company/{company}/riders/edit/{rider}', [RiderController::class, 'edit'])->name('company.riders.edit');
+
+        Route::get('company/route/create/', [RouteController::class, 'create'])->name('company.route.create');
+        Route::get('company/{company}/route/{route}/edit/', [RouteController::class, 'edit'])->name('company.route.edit');
+        Route::post('company/route/store/{company}', [RouteController::class, 'store'])->name('company.route.store');
+        Route::post('company/{company}/route/{route}/edit/', [RouteController::class, 'update'])->name('company.route.update');
+        Route::get('company/route/{route}/request', [RouteController::class, 'pendingRequest'])->name('company.route.request');
+
+        Route::get('request/pending/{placeRequest}', [PlaceRequestController::class, 'show'])->name('request.pending');
+        Route::post('request/approve/{placeRequest}', [PlaceRequestController::class, 'approve'])->name('request.approve');
+        Route::get('company/daily/order', [OrderController::class, 'index'])->name('company.daily.order');
+        Route::get('company/previous/order', [OrderController::class, 'previous'])->name('company.previous.order');
+        Route::get('company/orders/{order}/show', [OrderController::class, 'show'])->name('company.order.show');
+        Route::post('company/orders/{order}/update', [OrderController::class, 'update'])->name('company.order.update');
+        Route::get('company/daily/request', [PlaceRequestController::class, 'index'])->name('company.daily.request');
+        Route::get('company/wallet', [CompanyController::class, 'wallet'])->name('company.wallet');
+        Route::post('wallet/store/{user}', [TransactionController::class, 'store'])->name('wallet.store');
+    });
+
+    Route::middleware('can:admin')->group(function () {
+        Route::get('admin/company/pending', [CompanyController::class, 'pending'])->name('admin.company.pending');
+        Route::get('admin/company/register', [CompanyController::class, 'index'])->name('admin.company.index');
+        Route::get('admin/company/{company}', [CompanyController::class, 'show'])->name('admin.company.show');
+        Route::post('admin/company/{company}/accept', [CompanyController::class, 'accept'])->name('admin.company.accept');
+        // Route::get('admin/company/pending', [CompanyController::class, 'pending'])->name('admin.company.register');
+    });
+
+});
+
+
+
+
+
+Route::get('/', function () {
+    $apiKey = config('app.google_api');
+    return view('frontend.index',compact('apiKey'));
+})->name('frontend.index');
+Route::view('success','frontend.success')->name('success');
+
+Route::get('result', [FrontendController::class, 'result'])->name('frontend.result');
+Route::get('contact', [FrontendController::class, 'contact'])->name('frontend.contact'); 
+Route::post('contact', [FrontendController::class, 'contactProcess'])->name('frontend.contact');
+Route::get('request/company', [FrontendController::class, 'requestCompany'])->name('frontend.request.company');
+Route::post('request/route/{route}', [PlaceRequestController::class, 'store'])->name('make.request');
+Route::post('request/', [PlaceRequestController::class, 'sendRequest'])->name('send.request');
+
+
+
+
+
