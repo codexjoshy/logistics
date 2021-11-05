@@ -11,9 +11,15 @@
     <div class="col-12">
         <x-base.card title="Update Rider">
             <x-base.form :action="route('company.riders.update', [$company->id, $rider->id])" autocomplete="off" enctype="multipart/form-data">
+                @php
+                    $riderNames = $rider->riderNames();
+                @endphp
                 <div class="form-row">
-                    <x-base.form-group label="Rider Name" required class="col-md-4">
-                        <x-base.input required :value="old('rider_name') ?? $rider->user->name" name="rider_name"/>
+                    <x-base.form-group label="Rider First Name" required class="col-md-4">
+                        <x-base.input required :value="old('rider_first_name') ?? $riderNames['firstName']" name="rider_first_name"/>
+                    </x-base.form-group>
+                    <x-base.form-group label="Rider Last Name" required class="col-md-4">
+                        <x-base.input required :value="old('rider_last_name') ?? $riderNames['lastName']" name="rider_last_name"/>
                     </x-base.form-group>
                     <x-base.form-group label="Rider Email" required class="col-md-4">
                         <x-base.input required :value="old('rider_email')?? $rider->user->email" name="rider_email"/> 

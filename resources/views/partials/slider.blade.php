@@ -125,7 +125,7 @@
             data-fontsize="['16','16','16','13']"
             data-lineheight="['30','30','30','20']"
   
-            >We deliver your products on time with pure safety</div>
+            >We Connect You To a Verified Dispatch Company</div>
   
             <!-- LAYER NR. 12 -->
             <div class="tp-caption tp-resizeme btn-theme bg-navy-blue rev-btn" 
@@ -152,7 +152,7 @@
             data-fontsize="['14','14','14','14']"
             data-lineheight="['16','16','16','16']"
   
-            >Make a Request <i class="icofont-rounded-right"></i></div>
+            ><a class='text-white' href='#makeRequest'>Make a Request</a> <i class="icofont-rounded-right"></i></div>
           </li>
           <!-- SLIDE  -->
           <li data-index="rs-3045" data-transition="zoomout" data-slotamount="default" data-hideafterloop="0" data-hideslideonmobile="off"  data-easein="Power4.easeInOut" data-easeout="Power4.easeInOut" data-masterspeed="2000"  data-thumb="rev-slider/assets/images/datcolor-100x50.jpg"  data-rotate="0"  data-fstransition="fade" data-fsmasterspeed="1500" data-fsslotamount="7" data-saveperformance="off"  data-title="Intro" data-param1="" data-param2="" data-param3="" data-param4="" data-param5="" data-param6="" data-param7="" data-param8="" data-param9="" data-param10="" data-description=""> 
@@ -201,7 +201,7 @@
                 data-responsive_offset="on" 
   
                 
-                style="z-index: 2; white-space: nowrap; font-size: 18px; line-height: 30px;">We are ready to assist you in your delievries
+                style="z-index: 2; white-space: nowrap; font-size: 18px; line-height: 30px;">We are ready to Assist You with Your Orders
             </div>
             
             <!-- LAYER NR. 3 -->
@@ -225,7 +225,8 @@
                 data-responsive_offset="on" 
                 data-responsive="off"
                 
-                style="z-index: 3; white-space: nowrap; font-weight: 800;background-color:rgba(41, 46, 49, 1.00);border-color:rgba(255, 255, 255, 0);outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;">PARTNER WITH US
+                style="z-index: 3; white-space: nowrap; font-weight: 800;background-color:rgba(41, 46, 49, 1.00);border-color:rgba(255, 255, 255, 0);outline:none;box-shadow:none;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;">
+                <a class='text-white' href="{{route('register')}}">PARTNER WITH US</a>
             </div>
           </li>
         </ul>

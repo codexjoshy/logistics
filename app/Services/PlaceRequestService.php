@@ -11,11 +11,12 @@ class PlaceRequestService {
     {
         $placeRequests = PlaceRequest::whereDate('created_at', Carbon::today())
         ->when($company, function ($query) use($company) {
-            return $query->whereHas('route', function($q)use($company){
-                return $q->where('company_id', $company);
-            });
+            // return $query->whereHas('route', function($q)use($company){
+            //     return $q->where('company_id', $company);
+            // })
+            return $query->where('company_id', $company);
         })
-        ->when(!$company, fn($q)=> $q->whereNull('route_id'))
+        ->when(!$company, fn($q)=> $q->whereNull(['route_id', 'company_id']))
         ->where('status', 'pending')
         ->latest()->get();
         return $placeRequests;

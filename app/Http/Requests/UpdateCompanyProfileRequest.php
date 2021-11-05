@@ -24,10 +24,14 @@ class UpdateCompanyProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            "company_name"=> 'required|string|unique:companies,company_name,'.$this->company->id,
+            "company_name"=> [
+                'sometimes',
+                'string',
+                'unique:companies,company_name,'.$this->company->id
+            ],
             "company_email"=> 'required|string|unique:companies,company_email,'. $this->company->id,
             "company_phone" => 'required|numeric|unique:companies,company_phone,'. $this->company->id,
-            "rc_no"=> 'required|string|unique:companies,rc_no,'. $this->company->id,
+            "rc_no"=> 'sometimes|string|unique:companies,rc_no,'. $this->company->id,
             "cac" => 'nullable|file|mimes:png,jpg,pdf,jpeg|size:100'
         ];
     }

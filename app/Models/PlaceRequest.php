@@ -23,4 +23,19 @@ class PlaceRequest extends Model
     {
         return $this->hasOne(Order::class, 'request_id', 'id');
     }
+    public function rider()
+    {
+        return $this->belongsTo(Rider::class, 'rider_id', 'id');
+    }
+    public function getMinimumCompanyBalanceAttribute()
+    {
+        return 0.1 * $this->amount;
+    }
+    public function hasEnoughBalance($companyBalance=0)
+    {
+        
+        $amount = $this->minimum__company_balance;
+        return $companyBalance >= $amount;
+
+    }
 }

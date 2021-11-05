@@ -24,7 +24,8 @@ class CreateRiderRequest extends FormRequest
     public function rules()
     {
         return [
-            "rider_name"=> 'required|string',
+            "rider_first_name"=> 'required|string',
+            "rider_last_name"=> 'required|string',
             "rider_email"=> 'required|email|unique:users,email',
             "rider_phone"=> 'required|numeric|unique:users,phone',
             "rider_uid"=> 'required|string|unique:riders,rider_uid',

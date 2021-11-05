@@ -20,16 +20,16 @@
               <i class="icofont-google-map"></i> <span>Ikeja Lagos.</span>
             </div>
             <div class="d-flex align-items-start items">
-              <i class="icofont-phone"></i> <span><a href="tel:+2348135978939">+234 8135978939</a> </span>
+              <i class="icofont-phone"></i> <span><a href="tel:+2348175009200">+234 (0) 817 500 9200</a> </span>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-              <i class="icofont-email"></i> <a href="mailto:info.logisticsHub.com">info.logisticsHub.com</a>
+              <i class="icofont-email"></i> <a href="mailto:info@booklogistic.com">info@booklogistic.com</a>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-whatsapp"></i> <a href="">+234 8135978939</a> 
+                <i class="icofont-whatsapp"></i> <a href="tel:+2348175009200">+234 (0) 817 500 9200</a> 
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-facebook"></i><a href="#">logisticshub</a> 
+                <i class="icofont-facebook"></i><a href="https://www.facebook.com/profile.php?id=100072326775033">booklogistic</a> 
             </div>
           </div>
           <!-- Contact Detail Left -->
@@ -42,7 +42,7 @@
           <div class="">
         
             <div class="free-quote-form contact-page-option wow fadeInLeft" data-wow-duration="0" data-wow-delay="0s">                  
-                <form action="{{route('frontend.contact')}}" method="post" id="contactoption" novalidate="novalidate" class="rounded-field">
+                <form action="{{route('frontend.contact.process')}}" method="post" id="contactoption" novalidate="novalidate" class="rounded-field">
                     @csrf
                     <div class="form-row mb-4">
                       <div class="col">
@@ -58,7 +58,7 @@
                     
                     <div class="form-row mb-4">
                       <div class="col">
-                        <textarea required name="cment" rows="7" placeholder="Message" class="form-control"></textarea>
+                        <textarea required name="message" rows="7" placeholder="Message" class="form-control"></textarea>
                       </div>
                     </div>
                     <div class="form-row text-center">

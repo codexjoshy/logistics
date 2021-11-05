@@ -38,17 +38,19 @@
 @section('content')
 <section class="wide-tb-100 pb-0 mb-spacer-md">
     <div class="container">
-        <div class="row">
-            <div class="col-sm-12 d-flex">
-                <h3 class="h3-sm fw-6 txt-blue mb-4 col-md-6">Directions</h3>
-                <p>
-                    Didn't find any what you're looking for ?  
-                    <a href="#" role="button" data-toggle="modal" data-target="#request_popup"
-                        class="mr-2 mb-3 btn-theme bg-orange"> Make Request</a>
-                </p>
-            </div>
+        @if ($routes && count($routes))
+            <div class="row">
+                <div class="col-sm-12 d-flex">
+                    <h3 class="h3-sm fw-6 txt-blue mb-4 col-md-6">Directions</h3>
+                    <p>
+                        Didn't find any what you're looking for ?  
+                        <a href="#" role="button" data-toggle="modal" data-target="#request_popup"
+                            class="mr-2 mb-3 btn-theme bg-orange"> Make Request</a>
+                    </p>
+                </div>
 
-        </div>
+            </div>
+        @endif
         <div class="row">
             <!-- Counter Col Start -->
             @forelse ($routes as $route)
@@ -76,7 +78,7 @@
                 <div class="row d-flex align-self-start ml-5 media-body ">
                     <div>
                         <div><i class="icofont-clock-time mr-3"></i>Departure : {{$route->departure}} Am </div> 
-                        <div><i class="icofont-whatsapp"></i> <strong class="ml-2">Phone :  </strong><a href="">{{$route->company->company_phone}}</a> </div>
+                        <div style="position: absolute;" ><i class="icofont-whatsapp"></i> <strong class="ml-2">Phone :  </strong><a href="">{{$route->company->company_phone}}</a> </div>
                     </div>
                 </div>
                 <a href="#" role="button" data-toggle="modal" data-target="#request_company{{$route->company->id}}"
@@ -104,24 +106,38 @@
                                                 <div class="px-3 m-5">
                                                     <h2 class="h2-xl mb-4 fw-6">Book A Rider</h2>
                                                     <form action="{{route('make.request', [$route->id])}}" method="post" novalidate="novalidate"
-                                                        class="rounded-field">
+                                                        class="rounded-field" id="request-form-{{$route->id}}">
                                                         @csrf
 
                                                         <div class="form-row mb-4">
                                                             <div class="col">
-                                                                <input value="{{request()->pickup}}" required type="text" name="pickup" id="pickup-{{$route->id}}"
+                                                                <input readonly  value="{{request()->pickup}}" required type="text" name="pickup" id="pickup-{{$route->id}}"
                                                                     class="form-control" placeholder="Pickup Full Address" >
+                                                                @if (request()->morePickup)
+                                                                <div class="col-12 mb-4 more-details mt-lg-1" id="more-destination">
+                                                                    <input readOnly value="{{request()->morePickup}}" type="text" name="morePickup" class="form-control"
+                                                                        placeholder="more details delivery location">
+                                                                </div>
+                                                                    
+                                                                @endif
                                                             </div>
                                                             <div class="col">
-                                                                <input value="{{request()->destination}}" required type="text" name="delievery" id="delievery-{{$route->id}}"
+                                                                <input readonly value="{{request()->destination}}" required type="text" name="delievery" id="delievery-{{$route->id}}"
                                                                     class="form-control" placeholder="Delivery Full Address">
+                                                                @if (request()->moreDestination)
+                                                                <div class="col-12 mb-4 more-details mt-lg-1" id="more-destination">
+                                                                    <input readOnly value="{{request()->moreDestination}}" type="text" name="moreDestination" class="form-control"
+                                                                        placeholder="more details delivery location">
+                                                                </div>
+                                                                    
+                                                                @endif
                                                             </div>
                                                             
                                                         </div>
                                                        
                                                         <div class="form-row mb-4">
                                                             <div class="col-12 mb-4">
-                                                              <input type="text" name="distance" class="form-control" id="distance" placeholder="Distance">
+                                                              <input type="text" name="distance" readonly class="form-control" id="distance" placeholder="Distance">
                                                             </div>
                                                             <div class="col-12 mb-4">
                                                                 <div class="d-flex">
@@ -129,16 +145,15 @@
 
                                                                 </div>
                                                                 <div class="d-flex justify-content-between w-50 align-items-center">
-                                                                    <label class="mr-2 pr-1" for="regular"><input id="regular" checked type="radio" name="type" value="regular" />Regular </label>
-                                                                    <label  for="express"><input id="express"  type="radio" name="type" value="express" />Express </label>
-
+                                                                    <label class="mr-2 pr-1" for="regular"><input required id="regular" rel='{{$route->id}}'  type="radio" name="type" value="regular" class="type" />Regular </label>
+                                                                    <label  for="express"><input id="express" class='type' rel='{{$route->id}}' type="radio" name="type" value="express" />Express </label>
                                                                 </div>
                                                             </div>
                                                             
                                                         </div>
                                                         <div class="form-row mb-4" id="amountCont">
                                                             <div class="col-12 mb-4">
-                                                                <input type="text" name="amount" readOnly class="form-control" id="amount" placeholder="Amount">
+                                                                <input type="text" required name="amount" readOnly class="form-control" id="amount" placeholder="Amount">
                                                             </div>
                                                         </div>
                                                         <div class="form-row mb-4">
@@ -168,12 +183,15 @@
                                                        
                                                         <div class="form-row mb-4">
                                                             <div class="col">
+                                                                <label>Item Description</label>
                                                                 <textarea rows="5" name="description" class="form-control"
                                                                     placeholder="Item Description"></textarea>
                                                             </div>
-
+                                                            <div class="col">
+                                                                <label>Delivery Note </label>
+                                                                <textarea rows="7" placeholder="Delievery Note" class="form-control" name="note"></textarea>
+                                                            </div>
                                                         </div>
-
                                                         <div class="form-row">
                                                             <div class="col">
                                                                 <div class="center-head"><p
@@ -192,10 +210,6 @@
                                                                 <input required value="{{request()->phone}}" type="text"
                                                                     name="phone" class="form-control"
                                                                     placeholder="Phone Number">
-                                                            </div>
-                                                            
-                                                            <div class="col">
-                                                                <textarea rows="7" placeholder="Delievery Note" class="form-control" name="note"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="form-row">

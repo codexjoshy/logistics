@@ -31,4 +31,12 @@ class Company extends Model
     {
         return (new CompanyRouteService)->dailyRoute($this->id);
     }
+    public function isVerified()
+    {
+        return ($this->status == 'verified')?? false;
+    }
+    public function isOwing()
+    {
+        return $this->user->isOwing();  
+    }
 }

@@ -39,7 +39,16 @@ class PlaceRequestController extends Controller
     public function index()
     {
         $placeRequests = $this->requestService->pendingRequest();
-        return view('company.routes.requestPool', compact('placeRequests'));
+        $company = auth()->user()->company;
+        return view('company.routes.requestPool', compact('placeRequests', 'company'));
+    }
+
+    public function dailyRequest()
+    {
+        $company = auth()->user()->company;
+        $companyId = $company->id;
+        $placeRequests = $this->requestService->pendingRequest($companyId);
+        return view('company.routes.dailyRequest', compact('placeRequests', 'company'));
     }
 
     /**
@@ -54,9 +63,10 @@ class PlaceRequestController extends Controller
         try {
             $user = auth()->user();
             $balance = $user->balance();
-            throw_if($balance < 106, new LowBalanceException('Your Balance is too low to carry out operation, kindly credit your wallet to continue', 403));
+            throw_if(!$placeRequest->hasEnoughBalance($balance), new LowBalanceException('Your Balance is too low to carry out operation, kindly credit your wallet to continue', 403));
             DB::beginTransaction();
             $placeRequest->update(['status' => 'accepted']);
+            $requestAmount = $placeRequest->minimum_company_balance;
             //TODO generate otp for customer and
             $order = Order::create([
                 "request_id" => $placeRequest->id,
@@ -77,12 +87,12 @@ class PlaceRequestController extends Controller
             $deliever = $placeRequest->deliver_address;
             $amount = null;
             // send sms to receiver
-            $this->termii->sendToRider(displayPhone($riderPhone), $pickup, $sender->name,displayPhone('08135978939'), $receiverName, $receiverPhone, $deliever);
-            $this->termii->sendToReceiver($receiverPhone, displayPhone('08175009200'), $receiverName, $receiverOtp, $amount);
-            $this->termii->sendToSender($receiverPhone, $sender->name, displayPhone('08065009200'), $company, $customerOtp, 'T4A'.$order->id);
+            $this->termii->sendToRider(displayPhone($riderPhone), $pickup, $sender->name,$sender->phone, $receiverName, $receiverPhone, $deliever);
+            $this->termii->sendToReceiver(displayPhone($receiverPhone), $sender->name, $receiverName, $receiverOtp, $amount);
+            $this->termii->sendToSender(displayPhone($sender->phone), $sender->name, displayPhone('08065009200'), $company, $customerOtp, $order->code);
             // dd($send);
             //debit company for accepting
-            (new TransactionService)->debit($user->id, 106, "Debit for Order {$order->id}");
+            (new TransactionService)->debit($user->id, $requestAmount, "Debit for Order {$order->code}");
             DB::commit();
             // DB::afterCommit(function()use($order, $user, $customerOtp){
               
@@ -107,6 +117,7 @@ class PlaceRequestController extends Controller
      */
     public function store(Request $request, Route $route)
     {
+
         $request->validate([
             "pickup"=> 'required|string',
             "delievery" => 'required|string',
@@ -116,7 +127,11 @@ class PlaceRequestController extends Controller
             "email"=> 'required|email',
             "phone"=> 'required|numeric',
             "note"=> 'nullable|string',
-            "payment" => 'required|string|in:sender,receiver'
+            "payment" => 'required|string|in:sender,receiver',
+            "distance"=> 'required|string',
+            "amount"=> 'required|numeric',
+            "moreDestination"=>'sometimes|string',
+            "morePickup"=> 'sometimes|string',
         ]);
 
         [
@@ -132,7 +147,7 @@ class PlaceRequestController extends Controller
         PlaceRequest::create([
             "user_id" => $user->id, "pickup_address"=> $pickup, "delievery_address"=> $delievery,
             "reciever_name"=> $recieverName, "reciever_phone"=> $recieverPhone, "route_id"=> $route->id, 
-            "note"=> $note, "payment"=> $payment
+            "note"=> $note, "payment"=> $payment, "pickup_more_details"=>$request->morePickup, "destination_more_details"=>$request->moreDestination
         ]);
         return redirect()->route('success')->with('success', 'Your request was sent successfully. You will be notified shortly with the details you provided.');
     }
@@ -156,12 +171,19 @@ class PlaceRequestController extends Controller
             "note"=> 'nullable|string',
             "description"=> 'nullable|string',
             "companyId"=> 'sometimes|integer|exists:companies,id',
+            "type"=> 'required|string|in:express,regular',
+            "amount"=> 'required|numeric',
+            "distance"=> 'required|string',
+            "payment"=> 'required|string',
+            "moreDestination"=>'sometimes|string',
+            "morePickup"=> 'sometimes|string',
         ]);
 
         [
             "pickup"=> $pickup, "delievery"=> $delievery,
             "recieverName"=> $recieverName, "recieverPhone"=> $recieverPhone, "name"=> $name,
-            "email"=> $email, "phone"=> $phone, "note"=> $note, "description"=> $description
+            "email"=> $email, "phone"=> $phone, "note"=> $note, "description"=> $description, 
+            "amount"=>$amount, "distance"=>$distance, "type"=> $type,"payment"=>$payment
         ] = $request->all();
         try {
             DB::beginTransaction();
@@ -172,21 +194,22 @@ class PlaceRequestController extends Controller
             $placeRequest = PlaceRequest::create([
                 "user_id" => $user->id, "pickup_address"=> $pickup, "delievery_address"=> $delievery,
                 "reciever_name"=> $recieverName, "reciever_phone"=> $recieverPhone, "note"=> $note,
-                "description"=> $description, "status"=> 'pending'
+                "description"=> $description, "status"=> 'pending', "amount"=> $amount, "distance"=> $distance, "type"=> $type, 
+                "payment"=> $payment, "pickup_more_details"=>$request->morePickup, "destination_more_details"=>$request->moreDestination
             ]);
             if ($request->companyId) {
                 //TODO send mail
-                $order = Order::create([
-                    "request_id" => $placeRequest->id,
-                    "company_id"=> $request->companyId,
-                    "status"=> 'pending'
-                ]);
-    
+                // $order = Order::create([
+                //     "request_id" => $placeRequest->id,
+                //     "company_id"=> $request->companyId,
+                //     "status"=> 'pending'
+                // ]);
+                $placeRequest->update(['company_id' => $request->companyId]);
             }
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();
-            return back()->with('error', 'Sorry, something went wrong');
+            return back()->with('error', 'Sorry, something went wrong'.$th->getMessage());
         }
         
         return redirect()->route('success')->with('success', 'Your request was sent successfully. You will be notified shortly with the details you provided.');
@@ -201,10 +224,11 @@ class PlaceRequestController extends Controller
     public function show(PlaceRequest $placeRequest)
     {
         // dd($placeRequest);
+        $company = optional($placeRequest->route)->company;
         $riders =  optional($placeRequest->route)->company->riders ?? auth()->user()->company->riders;
         $assignedRider = optional($placeRequest->route)->rider_id;
         $companyRouteService = $this->companyRouteService;
-        return view('company.routes.pending', compact('placeRequest', 'riders', 'assignedRider', 'companyRouteService'));
+        return view('company.routes.pending', compact('placeRequest', 'riders', 'assignedRider', 'companyRouteService', 'company'));
     }
 
     /**

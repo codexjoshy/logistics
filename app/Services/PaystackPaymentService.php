@@ -20,7 +20,7 @@ class PaystackPaymentService implements PaymentInterface
         $this->unique = $unique;
     }
 
-    public function prepare(float $amount, string $description, array $info = [], ): Payment
+    public function prepare(float $amount, string $description, array $info = [] )
     {
         // Write Into Transaction
         return Payment::create([
@@ -33,10 +33,10 @@ class PaystackPaymentService implements PaymentInterface
     }
     public function prepareAdmin(
         float $amount,
-        array $info = [],
         int $user,
-        ?string $reference=null,
-    ): Payment {
+        array $info = [],
+        ?string $reference=null
+    ) {
         // Write Into Transaction
         if ($reference) $info['reference'] = $reference;
         return Payment::create([

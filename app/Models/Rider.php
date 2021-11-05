@@ -25,4 +25,22 @@ class Rider extends Model
         return (new CompanyRouteService)->riderIsBooked($this->id, $this->company_id);
     }
 
+    public function riderNames()
+    {
+        if($this->user->name){
+            $name = explode(" ", $this->user->name);
+            if($name > 1){ 
+                $firstName = $name[0];
+                unset($name[0]);
+                $lastName = implode(" ", $name);
+            }else{ 
+                $firstName = $name[0];
+                $lastName = $name[1] ?? '';
+            }
+            return [
+                "firstName" => $firstName,
+                "lastName" => $lastName
+            ];
+        }
+    }
 }

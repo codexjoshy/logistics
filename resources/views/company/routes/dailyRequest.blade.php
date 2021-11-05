@@ -5,24 +5,23 @@
     <div class="col-12">
         <x-base.card title="Requests">
             @php
-            // $direction = $dailyRoute->directions->pluck('name')->toArray();
-            // $requests = $services->placeRequest($dailyRoute->id);
-            $user = auth()->user();
-            $balance = $user->balance();
-            $canView = !$user->isOwing() && $placeRequest->hasEnoughBalance($balance);
-            $direction =  isset($routeRequests[0]) ? $routeRequests[0]->route->directions->pluck('name')->toArray() : '';
+                // $direction = $dailyRoute->directions->pluck('name')->toArray();
+                // $requests = $services->placeRequest($dailyRoute->id);
+                $user = auth()->user();
+                $balance = $user->balance();
+                $totalAmount = $placeRequests->sum('amount');
+                $balance = $user->balance();
+                $percentAmount = 0.1 * $totalAmount;
+
+                $canView = !$user->isOwing() && $balance > $percentAmount;
 
             @endphp
             <x-slot name="action">
-            @if (!$canView)
-                <p class="text-danger"><small>Sorry, you do not have enough funds to view the customer details. </small> <a href="{{route('company.wallet')}}" class='btn btn-sm btn-success'>Fund Wallet</a></p>
-            @else
-            @if ($direction)
-                    <p>Current Route: {{implode(' >> ', $direction)}}</p>   
-                @endif
-            @endif
+               @if (!$canView)
+                   <p class="text-danger"><small>Sorry, you do not have enough funds to view the customer request. </small> 
+                    <a href="{{route('company.wallet')}}" class='btn btn-sm btn-success'>Fund Wallet</a></p>
+               @endif
             </x-slot>
-
             <x-base.datatable>
                 <x-slot name="thead">
                     <th></th>
@@ -34,16 +33,16 @@
                 </x-slot>
 
                 <x-slot name="tbody">
-                    
-                    @forelse($routeRequests as $routeRequest)
+                   
+                    @forelse($placeRequests as $placeRequest)
                     <tr>
                         <td></td>
-                        <td>{{$canView ? $routeRequest->pickup_address : ""}}</td>
-                        <td>{{$canView ? $routeRequest->delievery_address : ''}}</td>
-                        <td>{{$routeRequest->customer->name}}</td>
-                        <td>{{$canView ? $routeRequest->customer->phone : ''}}</td>
+                        <td>{{$canView ? $placeRequest->pickup_address : ''}}</td>
+                        <td>{{$canView ? $placeRequest->delievery_address : ''}}</td>
+                        <td>{{$placeRequest->customer->name}}</td>
+                        <td>{{$canView ? $placeRequest->customer->phone : ''}}</td>
                         <td>
-                            <a href="{{route('request.pending', $routeRequest->id)}}"
+                            <a href="{{route('request.pending', $placeRequest->id)}}"
                                 class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
                                 data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
                                 <i class="fa fa-eye"></i>

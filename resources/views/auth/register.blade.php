@@ -44,11 +44,6 @@
                                 type="password"
                                 name="password_confirmation" required />
             </div>
-            <div>
-                <x-label for="name" :value="__('Plan')" />
-
-                <x-input disabled id="name" class="" type="text" name="plan" :value="old('plan')??request()->plan" required autofocus />
-            </div>
             <div class="d-flex justify-content-center mt-4">
                 <x-button class="ml-4">
                     {{ __('Register') }}
@@ -56,12 +51,19 @@
             </div>
 
             <div class="d-flex justify-content-between mt-4">
-                <a class="text-muted" href="{{ route('login') }}" style="margin-right: 15px; margin-top: 15px;">
-                    {{ __('Terms and Conditions') }}
-                </a>
-                <a class="text-muted" href="{{ route('login') }}" style="margin-right: 15px; margin-top: 15px;">
-                    {{ __('Already registered?') }}
-                </a>
+                <div>
+                    <input id="terms" class="" type="checkbox" name="terms" required />
+                         <a target="_blank" class="text-muted" href="{{ route('terms.condition') }}" style="margin-right: 15px; margin-top: 15px;">
+                            {{ __('I Accept the Terms and Conditions') }}
+                        </a>
+
+                </div>
+                <div>
+                    <a class="text-muted" href="{{ route('login') }}" style="margin-right: 15px; margin-top: 15px;">
+                        {{ __('Already registered?') }}
+                    </a>
+
+                </div>
             </div>
         </form>
     </x-auth-card>

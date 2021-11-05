@@ -6,6 +6,9 @@
 @endpush
 
 @section('content')
+@if (auth()->user()->isOwing())
+    @include('partials.balance')
+@else
 <div class="row mb-4">
     <div class="col-12">
         <x-base.card title="Create Daily Routes">
@@ -94,6 +97,7 @@
                     <th>Departure Time</th>
                     <th>Status</th>
                     <th>Routes</th>
+                    <th>Rider Name</th>
                     <th>Pending Requests</th>
                     <th></th>
                 </x-slot>
@@ -103,12 +107,16 @@
                     @php
                         $direction = $dailyRoute->directions->pluck('name')->toArray();
                         $requests = $services->routeRequest($dailyRoute->id);
+                        $riderName = optional($dailyRoute->rider)->user->name;
                     @endphp
                     <tr>
                         <td>{{$dailyRoute->departure}}</td>
                         <td>{{$dailyRoute->status}}</td>
                         <td>
                            {{implode(' >> ', $direction)}}
+                        </td>
+                        <td>
+                            {{$riderName}}
                         </td>
                         <td>
                             {{count($requests) ?? 0}}
@@ -139,6 +147,8 @@
         </x-base.card>
     </div>
 </div>  
+    
+@endif
 @push('scripts')
 <script>
 
@@ -153,7 +163,7 @@
                 dailyRoutes: [],
             },
             onInit() {
-                const data = @json($dailyRoutes->toArray());
+                const data = @json(optional($dailyRoutes)->toArray() );
                 if (data.dailyRoutes) {
                     for (const [key, value] of Object.entries(data.routes)) {
                         this.form.dailyRoutes.push({ key, value });

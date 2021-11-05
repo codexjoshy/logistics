@@ -6,6 +6,7 @@ use App\Http\Requests\StoreCompanyProfileRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
 use App\Models\Company;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
 {
@@ -31,7 +32,8 @@ class CompanyController extends Controller
         $company = Company::where('user_id', $user->id)->first();
         
         $webRoute = $company ? "company.profile.update" : "company.profile.store";
-        return view('company.create', compact('company', 'webRoute', 'user'));
+        $verified = $company ? $company->isVerified() : false;
+        return view('company.create', compact('company', 'webRoute', 'user', 'verified'));
     }
 
     public function pending()
@@ -104,21 +106,33 @@ class CompanyController extends Controller
      */
     public function update(UpdateCompanyProfileRequest $request, Company $company)
     {
-        ["company_name"=>$companyName, "company_email"=>$companyEmail, 
-            "company_phone"=>$companyPhone, "rc_no"=>$rcNo]= $request->validated();
+        [ "company_email"=>$companyEmail, 
+            "company_phone"=>$companyPhone]= $request->validated();
         $companyData = [
-            "company_name"=>$companyName,
             "company_email"=>$companyEmail,
             "company_phone"=>$companyPhone,
-            "rc_no"=>$rcNo,
         ];
-        if($request->cac){
-            $path = $request->cac->store('cac', 'public');
-            $companyData['cac'] = $path;
+        if (Gate::allows('admin') && $company->status == 'verified') {
+            $companyData[]= ["company_name"=>$request->company_name, "rc_no"=>$request->rc_no];
+            if($request->cac && $company->status != 'verified'){
+                $path = $request->cac->store('cac', 'public');
+                $companyData['cac'] = $path;
+            }
+
         }
-        if($request->logo){
+        if ( $company->status != 'verified') {
+            if($request->cac ){
+                $path = $request->cac->store('cac', 'public');
+                $companyData['cac'] = $path;
+            }
+            $companyData[] = ["rc_no"=>$request->rc_no];
+        }
+        if($request->logo){ 
             $path = $request->logo->store('companyLogo', 'public');
             $companyData['logo'] = $path;
+        }
+        if ($request->slogan) {
+            $companyData['slogan'] = $request->slogan;
         }
         $company->update($companyData);
         return back()->with('success', 'Company updated successfully');

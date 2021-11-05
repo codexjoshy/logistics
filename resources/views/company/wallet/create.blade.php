@@ -9,22 +9,26 @@
                     <strong class="text-danger">Your account is currently under review </strong>
                 @endif
             </x-slot>
-            <x-base.form :action="route('wallet.store', $company->user->id)" autocomplete="off">
-                <div class="form-row">
-                    <x-base.form-group label="Amount" required class="col-md-12">
-                        <x-base.input required :value="old('amount')" name="amount"/>
-                    </x-base.form-group>
+            @if ($user->company)
+                <x-base.form :action="route('wallet.store', $company->user->id)" autocomplete="off">
+                    <div class="form-row">
+                        <x-base.form-group label="Amount" required class="col-md-12">
+                            <x-base.input required :value="old('amount')" name="amount"/>
+                        </x-base.form-group>
+                        
+                    </div>
+                    <x-base.form-group class="text-center">
+                        @if ($company->status == 'verified')
+                        <x-base.button class="btn-primary">
+                            Submit
+                        </x-base.button>
+                        @endif
                     
-                </div>
-                <x-base.form-group class="text-center">
-                    @if ($company->status == 'verified')
-                    <x-base.button class="btn-primary">
-                        Submit
-                    </x-base.button>
-                    @endif
-                   
-                </x-base.form-group>
-            </x-base.form>
+                    </x-base.form-group>
+                </x-base.form>
+            @else
+            @include('partials.profile')
+            @endif
         </x-base.card>
     </div>
 </div>

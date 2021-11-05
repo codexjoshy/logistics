@@ -1,8 +1,5 @@
 <!doctype html>
 <html lang="en">
-
-<!-- Mirrored from mannatstudio.com/html/logzee/V2.2/index-3.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 19 Jun 2021 16:34:58 GMT -->
-
 <head>
   <!-- xxx Basics xxx -->
   <meta charset="utf-8">
@@ -11,20 +8,20 @@
 
   <!-- xxx Change With Your Information xxx -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0 user-scalable=no" />
-  <title>BOOK LOGISTICS</title>
+  <title>BOOK LOGISTIC</title>
   <meta name="author" content="Mannat Studio">
-  <meta name="description" content="Logzee is a Responsive HTML5 Template for Logistic and Cargo related services.">
+  <meta name="description" content="Book Logistic,is a platform that connects logistic companies with customers in need to deliver items">
   <meta name="keywords"
-    content="Logzee, responsive, html5, business, cargo, chain supply, company, corporate, expedition, freight, logistics, packaging, services, shipping, transport, transportation, trucking, warehousing">
+    content="Logistic, logistic, deliver, bike delivery">
 
   <!-- xxx Favicon xxx -->
-  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/frontenc/favicon.ico') }}">
 
   <!-- xxx Favicon xxx -->
-  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/frontend/favicon.ico') }}">
 
   <!-- xxx Favicon xxx -->
-  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/favicon.ico') }}">
+  <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/frontend/favicon.ico') }}">
 
   <!-- Main Style CSSS -->
   <link href="{{ asset('assets/css/theme-plugins.min.css') }}" rel="stylesheet">
@@ -44,6 +41,19 @@
   <style>
     .navbar-brand {
       background-color: transparent !important;
+    }
+    .bg-with-text {
+      background-image: url('{{asset('assets/map.jpg')}}') !important;
+      background-position: center !important;
+      background-color:'#000';
+      background-size: cover;
+      border-radius: 5px;
+      text-align: center;
+      color: #FFF;
+      font-size: 1.125rem;
+      padding: 0 1.5rem;
+      font-weight: 300;
+      line-height: 2;
     }
   </style>
   @stack('css')
@@ -94,8 +104,12 @@
                     aria-expanded="false">Home </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ route('frontend.index') }}" aria-haspopup="true"
-                    aria-expanded="false">Track Freight </a>
+                  <a class="nav-link" href="{{ route('frontend.contact') }}" aria-haspopup="true"
+                    aria-expanded="false">Contact </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#track" aria-haspopup="true"
+                    aria-expanded="false">Track Item </a>
                 </li>
                 @guest
                 <li class="nav-item">
@@ -155,15 +169,40 @@
             </div>
           </div>
           @endif
+        </div>
+      </div>
+    </section>
+    <!-- Message Boxes End -->
+    @endif
+    @if (session('error'))
+    <!-- Message Boxes Start -->
+    <section class="wide-tb-100 pb-0">
+      <div class="container">
+        <div class="row">
 
-          {{-- <div class="col-sm-4">
+          <div class="col-sm-12">
             <div class="alert alert-danger" role="alert">
-              A simple danger alert
+              <p class="text-center d-inline-block">
+                <strong>{{ session('error') }}</strong>
+              </p>
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-          </div> --}}
+          </div>
+          @if ($errors->any())
+
+          <div class="col-sm-12">
+            <div class="alert alert-danger" role="alert">
+              <p class="text-center d-inline-block">
+                <strong>{{ implode('', $errors->all('<div>:message</div>')) }}</strong>
+              </p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          @endif
         </div>
       </div>
     </section>
@@ -218,63 +257,37 @@
           <p>Lets get to meet you on various social platform</p>
           <p>we are ready to be of assistance</p>
 
+          
           <h3 class="footer-heading">We're Social</h3>
           <div class="social-icons">
             <a href="https://www.facebook.com/profile.php?id=100072326775033"><i class="icofont-facebook"></i></a>
-            <a href="#"><i class="icofont-twitter"></i></a>
-            <a href="#"><i class="icofont-whatsapp"></i></a>
-            <a href="#"><i class="icofont-google-plus"></i></a>
+            {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
+            <a href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
+            <a href="mailto:info@booklogistic.com"><i class="icofont-google-plus"></i></a>
+            <a href="https://www.instagram.com/invites/contact/?i=827jpvt7cs7g&utm_content=mjo8noc">
+              <i class="icofont-instagram"></i></a>
           </div>
         </div>
         <!-- Column First -->
 
         <!-- Column Second -->
-        <div class="col-lg-4 col-md-6 wow fadeInLeft" data-wow-duration="0" data-wow-delay="0.2s">
-          {{-- <h3 class="footer-heading">Recent Post</h3>
-            <div class="blog-list-footer">
-            <ul class="list-unstyled">
-                <li>
-                <div class="media">
-                    <div class="post-thumb">
-                        <img src="assets/images/post_thumb_1.jpg" alt="" class="rounded-circle">
-                    </div>
-                    <div class="media-body post-text">
-                        <h5 class="mb-3 h5-md"><a href="#">Liberalisation of air cargo</a></h5>
-                        <p>Far far away, behind the word mountains, far from the countries.</p>
+        {{-- <div class="col-lg-4 col-md-6 wow fadeInLeft" data-wow-duration="0" data-wow-delay="0.2s">
 
-                        <div class="comment-box">
-                        <span><i class="icofont-ui-calendar"></i>  04.10.2013</span>
-                        <span><a href="#"><i class="icofont-speech-comments"></i>  25</a></span>
-                        </div>
-                    </div>
-                </div>
-                </li>
-                <li>
-                <div class="media">
-                    <div class="post-thumb">
-                        <img src="assets/images/post_thumb_2.jpg" alt="" class="rounded-circle">
-                    </div>
-                    <div class="media-body post-text">
-                        <h5 class="mb-3 h5-md"><a href="#">New Ocean Freight Rules</a></h5>
-                        <p>Far far away, behind the word mountains, far from the countries.</p>
-
-                        <div class="comment-box">
-                        <span><i class="icofont-ui-calendar"></i>  04.10.2013</span>
-                        <span><a href="#"><i class="icofont-speech-comments"></i>  25</a></span>
-                        </div>
-                    </div>
-                </div>
-                </li>
-            </ul>
-            
-            </div> --}}
-        </div>
+        </div> --}}
         <!-- Column Second -->
 
         <!-- Column Third -->
         <div class="col-lg-4 col-md-12 wow fadeInLeft" data-wow-duration="0" data-wow-delay="0.4s">
           {{-- <h3 class="footer-heading">Our Photostream</h3>
             <ul id="basicuse" class="photo-thumbs"></ul> --}}
+        </div>
+        <div class="col-lg-4 col-md-12 wow fadeInLeft " data-wow-duration="0" data-wow-delay="0.4s">
+          <h3 class="footer-heading">Main Links</h3>
+            <ul id="" class="">
+              <li><a href="/">Home</a></li>
+              <li><a href="{{route('frontend.contact')}}">Contact</a></li>
+              <li><a href="{{route('login')}}">Login</a></li>
+            </ul>
         </div>
         <!-- Column Third -->
 
@@ -284,13 +297,19 @@
     <div class="copyright-wrap bg-navy-blue wide-tb-30">
       <div class="container">
         <div class="row text-md-left text-center">
-          <div class="col-sm-12 col-md-6 copyright-links">
-            <a href="#">Privacy Policy</a> <span>|</span> <a href="#">Contact</a> <span>|</span> <a target="_blank"
-              href="{{ asset('assets/img/terms.pdf') }}">Terms & Conditions</a>
+          <div class="col-sm-12 col-md-4 copyright-links">
+            <a href="#">Privacy Policy</a> <span>|</span> <a href="{{route('frontend.contact')}}">Contact</a> <span>|</span> <a target="_blank"
+              href="{{ route('terms.condition') }}">Terms & Conditions</a>
           </div>
-          <div class="col-sm-12 col-md-6 text-md-right text-center">
+          <div class="col-sm-12 col-md-4 copyright-links text-center">
+            <a href="/">Book Logistic</a> 
+        </div>
+          <div class="col-sm-12 col-md-4 text-md-right text-center">
             Designed by <a href="#" rel="nofollow">Booklogistic</a> © 2021 All Rights Reserved
           </div>
+         
+        </div>
+         
         </div>
       </div>
     </div>
@@ -298,7 +317,7 @@
   <!-- Main Footer End -->
 
   <!-- Request Modal -->
-  <div class="modal fade" id=request_popup tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal fade" id="request_popup" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered request_popup" role="document">
       <div class="modal-content">
         <div class="modal-body p-0">
@@ -319,7 +338,7 @@
                   <div class="px-3 m-5">
                     <h2 class="h2-xl mb-4 fw-6">Book A Rider</h2>
                     <form action="{{ route('send.request') }}" method="post" novalidate="novalidate"
-                      class="rounded-field">
+                      class="rounded-field" id="request-form-0">
                       @csrf
                       @if ($errors->any())
 
@@ -338,26 +357,41 @@
                       <div class="form-row mb-4">
                         <div class="col-12">
                           <label>Pickup Address</label>
-                          <input value="{{ old('pickup') ?? request()->pickup }}" required type="text" name="pickup"
+                          <input readonly value="{{ old('pickup') ?? request()->pickup }}" required type="text" name="pickup"
                             class="form-control" placeholder="Pickup Address">
                           @error('pickup')
                           {{ $message }}
                           @enderror
+                          @if (request()->morePickup)
+                            <div class="col-12 mb-4 more-details mt-lg-1" id="more-destination">
+                                <input readOnly value="{{request()->morePickup}}" type="text" name="morePickup" class="form-control"
+                                    placeholder="more details delivery location">
+                            </div>
+                                
+                          @endif
                         </div>
                       </div>
                       <div class="form-row mb-4">
                         <div class="col-12">
                           <label>Destination</label>
-                          <input value="{{ old('delievery') ?? request()->destination }}" required type="text"
+                          <input readonly value="{{ old('delievery') ?? request()->destination }}" required type="text"
                             name="delievery" class="form-control" placeholder="Delivery Address">
                           @error('delievery')
                           {{ $message }}
                           @enderror
+
+                          @if (request()->moreDestination)
+                            <div class="col-12 mb-4 more-details mt-lg-1" id="more-destination">
+                                <input readOnly value="{{request()->moreDestination}}" type="text" name="moreDestination" class="form-control"
+                                    placeholder="more details delivery location">
+                            </div>
+                                
+                          @endif
                         </div>
                       </div>
                       <div class="form-row mb-4">
                         <div class="col-12 mb-4">
-                          <input type="text" name="distance" class="form-control" id="distance" placeholder="Distance">
+                          <input required type="text" name="distance" readonly value="" class="form-control" id="distance" placeholder="Distance">
                         </div>
                         <div class="col-12 mb-4">
                           <div class="d-flex">
@@ -365,9 +399,12 @@
 
                           </div>
                           <div class="d-flex justify-content-between w-50 align-items-center">
-                            <label class="mr-2 pr-1" for="regular"><input id="regular" checked type="radio" name="type"
+                            <label for="regular" class="mr-2 pr-1">
+                              <input required id="regular" rel="0"  type="radio" name="type"
                                 value="regular" class='type' />Regular </label>
-                            <label for="express"><input id="express" type="radio" class='type' name="type" value="express" />Express
+
+                            <label for="express">
+                              <input id="express" rel='0' type="radio" class='type' name="type" value="express" />Express
                             </label>
 
                           </div>
@@ -376,7 +413,7 @@
                       </div>
                       <div class="form-row mb-4" id="amountCont">
                         <div class="col-12 mb-4">
-                          <input type="text" name="amount" readOnly class="form-control" id="amount"
+                          <input required type="text" name="amount" readOnly class="form-control" id="amount"
                             placeholder="Amount">
                         </div>
                       </div>
@@ -404,7 +441,7 @@
                             Sender
                           </label>
                           <label for="receiver">
-                            <input id="receiver" required value="receiver" type="radio" name="payment">
+                            <input id="receiver"  value="receiver" type="radio" name="payment">
                             Receiver
                           </label>
 
@@ -412,11 +449,13 @@
                       </div>
                       <div class="form-row mb-4">
                         <div class="col">
+                            <label>Item Description</label>
                           <textarea rows="5" placeholder="Item Description" name="description" class="form-control">
 
                               </textarea>
                         </div>
                         <div class="col">
+                            <label>Delievery Note</label>
                           <textarea rows="5" placeholder="Delievery Note" class="form-control" name="note">
 
                               </textarea>
@@ -466,16 +505,13 @@
   <script src="{{ asset('assets/twitter/jquery.tweet.js') }}"></script>
 
   <!-- JQuery Map Plugin -->
-  {{-- <script async src="https://maps.googleapis.com/maps/api/js?key={{$apiKey}}&libraries=places&callback=initMap">
-  </script> --}}
+
   <script type="text/javascript"
-    src="http://maps.googleapis.com/maps/api/js?key={{ config('app.google_api') }}&sensor=false&libraries=places">
+    src="https://maps.googleapis.com/maps/api/js?key={{ config('app.google_api') }}&sensor=false&libraries=places">
   </script>
 
-
-  {{-- <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script> --}}
   <script type="text/javascript" src="{{ asset('assets/js/jquery.gmap.min.js') }}"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 
   <!-- REVOLUTION JS FILES -->
   <script type="text/javascript" src="assets/revolution/js/jquery.themepunch.tools.min.js"></script>
@@ -630,7 +666,7 @@
         );
       }
       function callToAction(response, status) {
-        let dist = document.getElementById("distance");
+        let dist = document.querySelector("#request-form-0 #distance");
         if(status=="OK") {             
             dist.value = response.rows[0].elements[0].distance.text;
         } else {
@@ -645,51 +681,53 @@
       }
     })
 
-     $(function(){
-        $('#amountCont').hide();
-        $('.type').change(function() {
-          let type = $(this).val();
-          let distance = $('#distance').val();
-          distance = parseFloat(distance);
-          let amount = expressDelievery(distance);
-          $('#amountCont').show();
-          $('#amount').show().val(amount[type]);
+    //  $(function(){
+    //     $('#amountCont').hide();
+    //     $('.type').change(function() {
+    //       let type = $(this).val();
+    //       let distance = $('#distance').val();
+    //       distance = parseFloat(distance);
+    //       if (distance) {
+    //         let amount = expressDelievery(distance);
+    //         $('#amountCont').show();
+    //         $('#amount').show().val(amount[type]);
+    //       }
 
-        })
-        function expressDelievery(distance) {
+    //     })
+    //     function expressDelievery(distance) {
             
-          if (distance < 10) {
-            return {
-              regular:1000,
-              express: 2000
-            }
-          }
-          if (distance < 20) {
-            return {
-              regular:1500,
-              express: 2500
-            }
-          }
-          if (distance < 30) {
-            return {
-              regular:2000,
-              express: 3500
-            }
-          }
-          if (distance < 40) {
-            return {
-              regular:2500,
-              express: 4500
-            }
-          }
-          if (distance < 50) {
-            return {
-              regular:3000,
-              express: 5500
-            }
-          }
-        }
-      })
+    //       if (distance < 10) {
+    //         return {
+    //           regular:1000,
+    //           express: 2000
+    //         }
+    //       }
+    //       if (distance < 20) {
+    //         return {
+    //           regular:1500,
+    //           express: 2500
+    //         }
+    //       }
+    //       if (distance < 30) {
+    //         return {
+    //           regular:2000,
+    //           express: 3500
+    //         }
+    //       }
+    //       if (distance < 40) {
+    //         return {
+    //           regular:2500,
+    //           express: 4500
+    //         }
+    //       }
+    //       if (distance < 50) {
+    //         return {
+    //           regular:3000,
+    //           express: 5500
+    //         }
+    //       }
+    //     }
+    //   })
   </script>
   @stack('scripts')
 </body>

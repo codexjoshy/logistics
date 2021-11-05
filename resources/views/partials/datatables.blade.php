@@ -1,6 +1,6 @@
 @push('css')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.6.5/css/buttons.dataTables.min.css"/>
-    <link href="{{ asset('css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('backend/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
     {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/colreorder/1.5.3/css/colReorder.dataTables.min.css"/> --}}
 
     {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/searchbuilder/1.0.1/css/searchBuilder.dataTables.min.css"/> --}}
@@ -8,8 +8,8 @@
 @endpush
 
 @push('scripts')
-    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('backend/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('backend/js/dataTables.bootstrap4.min.js') }}"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AjaxController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FrontendController;
@@ -32,7 +33,8 @@ Route::get('payment/verify', [PaymentController::class, 'verify'])->name('paymen
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'home'] )->name('dashboard');
-    
+    Route::get('change-password', [DashboardController::class, 'changePassword'])->name('change.password');
+    Route::post('update-password', [DashboardController::class, 'updatePassword'])->name('update.password');
     Route::middleware('can:company')->group(function () {
         Route::get('company/profile', [CompanyController::class, 'create'])->name('company.profile.create');
         Route::post('company/profile/store', [CompanyController::class, 'store'])->name('company.profile.store');
@@ -54,9 +56,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('company/previous/order', [OrderController::class, 'previous'])->name('company.previous.order');
         Route::get('company/orders/{order}/show', [OrderController::class, 'show'])->name('company.order.show');
         Route::post('company/orders/{order}/update', [OrderController::class, 'update'])->name('company.order.update');
-        Route::get('company/daily/request', [PlaceRequestController::class, 'index'])->name('company.daily.request');
+        Route::get('company/daily/pool', [PlaceRequestController::class, 'index'])->name('company.daily.pool');
+        Route::get('company/daily/request', [PlaceRequestController::class, 'dailyRequest'])->name('company.daily.request');
+
         Route::get('company/wallet', [CompanyController::class, 'wallet'])->name('company.wallet');
         Route::post('wallet/store/{user}', [TransactionController::class, 'store'])->name('wallet.store');
+    });
+    Route::middleware('can:rider')->group(function(){
+        Route::get('rider/order/{order}', [OrderController::class, 'riderOrder'])->name('rider.order');
+        Route::post('rider/order/{order}/update', [OrderController::class, 'updateOrderStatus'])->name('rider.order.update');
     });
 
     Route::middleware('can:admin')->group(function () {
@@ -78,13 +86,20 @@ Route::get('/', function () {
     return view('frontend.index',compact('apiKey'));
 })->name('frontend.index');
 Route::view('success','frontend.success')->name('success');
+Route::view('terms-and-condition','frontend.terms')->name('terms.condition');
 
 Route::get('result', [FrontendController::class, 'result'])->name('frontend.result');
 Route::get('contact', [FrontendController::class, 'contact'])->name('frontend.contact'); 
-Route::post('contact', [FrontendController::class, 'contactProcess'])->name('frontend.contact');
+Route::post('contact', [FrontendController::class, 'contactProcess'])->name('frontend.contact.process');
 Route::get('request/company', [FrontendController::class, 'requestCompany'])->name('frontend.request.company');
 Route::post('request/route/{route}', [PlaceRequestController::class, 'store'])->name('make.request');
 Route::post('request/', [PlaceRequestController::class, 'sendRequest'])->name('send.request');
+
+Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
+Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
+Route::post('api/order/check/order/otp', [AjaxController::class, 'checkOrderOtp'])->name('check.order.otp');
+
+
 
 
 

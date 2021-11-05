@@ -25,9 +25,10 @@ class UpdateRiderRequest extends FormRequest
     public function rules()
     {
         return [
-            "rider_name"=> 'required|string|',
+            "rider_first_name"=> 'required|string',
+            "rider_last_name"=> 'required|string',
             "rider_email"=> 'required|email|unique:users,email, '. $this->rider->user->id,
-            "rider_phone"=> 'required|numeric|unique:users,phone, '. $this->rider->user->id,
+            "rider_phone"=> 'required|numeric',
             "rider_uid"=> 'required|string|unique:riders,rider_uid, '. $this->rider->id,
             "rider_address"=> 'required|string',
             "status"=> 'required|string|in:active,inactive,suspended',

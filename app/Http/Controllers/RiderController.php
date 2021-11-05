@@ -45,7 +45,7 @@ class RiderController extends Controller
     {
         $validated = $request->validated();
         $user = User::create([
-            "email" => $validated['rider_email'], "name" => $validated['rider_name'],
+            "email" => $validated['rider_email'], "name" => "{$validated['rider_first_name']}  {$validated['rider_last_name']}",
             "phone" => $validated['rider_phone'], "password" => Hash::make('password'),
             "type" => 'rider'
         ]);
@@ -94,8 +94,9 @@ class RiderController extends Controller
     {
         [
             "rider_email" => $email, "rider_phone" => $phone, "status" => $status,
-            "rider_address" => $address, "rider_name" => $name, "rider_uid" => $uid,
+            "rider_address" => $address, "rider_first_name" => $first,"rider_last_name" => $last, "rider_uid" => $uid,
         ] = $request->validated();
+        $name = "$first $last";
         $path = null;
         if ($request->passport) {
             $path = $request->passport->store('riders', 'public');

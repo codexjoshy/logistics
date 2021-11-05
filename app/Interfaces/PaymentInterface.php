@@ -15,7 +15,7 @@ interface PaymentInterface
      * @param array $info
      * @return \App\Models\Payment
      */
-    public function prepare(float $amount, string $description, array $info = []): Payment;
+    public function prepare(float $amount, string $description, array $info = []);
     /**
      * Prepare the transaction and return an instance of payment class
      *
@@ -24,7 +24,7 @@ interface PaymentInterface
      * @param array $info
      * @return \App\Models\Payment
      */
-    public function prepareAdmin(float $amount, array $info = [], int $user): Payment;
+    public function prepareAdmin(float $amount, int $user, array $info = [], ?string $reference);
 
     /**
      * Verify the given payment record

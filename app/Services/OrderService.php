@@ -34,6 +34,13 @@ class OrderService {
         }
         return $otp;
     }
+    public function updateOrderStatus(int $order, string $status)
+    {
+        $Order = Order::find($order);
+        if($status == 'delivered'){
+            
+        }
+    }
    
 }
 

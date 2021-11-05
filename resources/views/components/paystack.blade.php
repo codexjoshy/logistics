@@ -23,7 +23,7 @@
             key: "{{config('services.payment.paystack.key')}}", // Replace with your public key
             email: "{{$transaction->user->email}}",
             amount: {{$transaction->amount * 100}},
-            ref: {{$transaction->reference}}, // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
+            ref: "{{$transaction->reference}}", // generates a pseudo-unique reference. Please replace with a reference you generated. Or remove the line entirely so our API will generate one for you
             // label: "Optional string that replaces customer email"
             onClose: function(){
             alert('Transaction Cancelled.');

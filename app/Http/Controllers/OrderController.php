@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Rider;
+use App\Services\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
@@ -15,9 +18,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with('companyRequest')->whereDate('created_at', Carbon::today())
-        ->where(['company_id'=> auth()->user()->company->id])
-            ->latest()->get();
+        $company = auth()->user()->company;
+        $orders = [];
+        if ($company) {
+            $orders = Order::with('companyRequest')->whereDate('created_at', Carbon::today())
+            ->where(['company_id'=> $company->id])
+                ->latest()->get();
+        }
         return view('company.order.index', compact('orders'));
     }
 
@@ -92,5 +99,50 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+    public function riderOrder(Order $order)
+    {
+        return view('rider.order', compact('order'));
+    }
+
+    public function updateOrderStatus(Request $request, Order $order)
+    {
+        $data = [];
+        $error = false;
+        if ($order->status == 'accepted') {
+            $validate = ["otp"=> 'required|string|exists:orders,customer_otp'];
+            $data = ["status"=> 'in-transit'];
+            $error = $order->customer_otp != $request->otp;
+        }
+        if ($order->status == 'in-transit') {
+            $validate = ["otp"=> 'required|string|exists:orders,reciever_otp'];
+            $data = ["status"=> 'delievered'];
+            $error = $order->reciever_otp != $request->otp;
+        }
+        $request->validate($validate);
+
+        if(!count($data) || $error) {
+            $errorMsg = $error ? 'OTP mismatch' : '';
+            return back()->with('error', 'Sorry unable to update the order.'. $errorMsg);
+        }
+        if ($order->status == 'in-transit') {
+            try {
+                DB::beginTransaction();
+                $company = $order->rider->company->user->id;
+                $charges = $order->companyRequest()->minimum_company_balance;
+                $deliveryFee = $order->companyRequest()->amount;
+                $balance = $deliveryFee - $charges;
+                (new TransactionService)->credit($company, $balance, "Wallet crediting for ".$order->code, auth()->id());
+                DB::commit();
+            } catch (\Throwable $th) {
+                DB::rollback();
+                return back()->with('error','Sorry unable to update your wallet at this time');
+            }
+        }
+        $order->update($data);
+
+        // credit company account
+        
+        return back()->with('success', 'Status updated successfully');
     }
 }

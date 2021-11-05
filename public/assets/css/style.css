@@ -1615,6 +1615,7 @@ h2.h2-xl { font-size: 1.5rem; }     /* 24px */
   margin-bottom: -70px;
 }
 .rounded-field input[type="text"],
+.rounded-field input[type="number"],
 .rounded-field input[type="email"],
 .rounded-field select,
 .rounded-field .nice-select{	
@@ -2216,7 +2217,7 @@ h2.h2-xl { font-size: 1.5rem; }     /* 24px */
     overflow: hidden;
 }
 .bg-with-text{
-    background: url(../images/bg-text.jpg) no-repeat center right;
+    background: url(../assets/map.jpg) no-repeat center right;
     background-size: cover;
     border-radius: 5px;
     text-align: center;
@@ -2699,6 +2700,7 @@ h2.h2-xl { font-size: 1.5rem; }     /* 24px */
     margin-top: -140px;
 }
 .free-quote-form.contact-page .rounded-field input[type="text"], 
+.free-quote-form.contact-page .rounded-field input[type="number"], 
 .free-quote-form.contact-page .rounded-field input[type="email"], 
 .free-quote-form.contact-page .rounded-field select,
 .free-quote-form.contact-page .rounded-field .nice-select,

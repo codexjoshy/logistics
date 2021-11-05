@@ -22,12 +22,24 @@ class FrontendController extends Controller
         ]);
         ["pickup"=> $pickup, "destination"=>$destination] = $request->all();
 
-        $routes = RouteDirection::with('route')
-            ->where('name', 'like', "%$pickup%")
-            // ->orWhere('name', 'like', "%$destination%")
-            ->whereDate('created_at', Carbon::today())
-            ->get()->pluck('route');
+        // $routes = RouteDirection::with('route')
+        //     ->where('name', 'like', "%$pickup%")
+        //     // ->orWhere('name', 'like', "%$destination%")
+        //     ->whereDate('created_at', Carbon::today())
+        //     ->get()->pluck('route');
         // dd($routes);
+        $pickup = strtolower($pickup);
+        $destination = strtolower($destination);
+        $startDay = Carbon::now()->startOfDay();
+        $endDay   = $startDay->copy()->endOfDay();
+    
+        $routes = DB::select(DB::raw("SELECT * FROM route_directions WHERE INSTR('$pickup $destination',name)<>0 AND created_at between '$startDay' AND '$endDay' "));
+        $routes = RouteDirection::hydrate($routes);
+        $routes = $routes->map(function($route){
+            $myRoute = Route::where('id', $route->route_id)->first();
+           return $route->setRelation('route', $myRoute);
+        })->pluck('route');
+
         return view("frontend.result", compact('routes'));
     }
     public function contact(Request $request)

@@ -20,16 +20,16 @@
               <i class="icofont-google-map"></i> <span>Ikeja Lagos.</span>
             </div>
             <div class="d-flex align-items-start items">
-              <i class="icofont-phone"></i> <span><a href="tel:+2348135978939">+234 8135978939</a> </span>
+              <i class="icofont-phone"></i> <span><a href="tel:+2348135978939">+234 (0) 817 500 9200</a> </span>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-              <i class="icofont-email"></i> <a href="mailto:info.logisticsHub.com">info.logisticsHub.com</a>
+              <i class="icofont-email"></i> <a href="mailto:info.logisticsHub.com">info@booklogistic.com</a>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-whatsapp"></i> <a href="">+234 8135978939</a> 
+                <i class="icofont-whatsapp"></i> <a href="https://wa.me/message/WBXVFFUUUMIZJ1">+234 (0) 817 500 9200</a> 
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-facebook"></i><a href="#">logisticshub</a> 
+                <i class="icofont-facebook"></i><a href="https://www.facebook.com/profile.php?id=100072326775033">booklogistic</a> 
             </div>
           </div>
           <!-- Contact Detail Left -->

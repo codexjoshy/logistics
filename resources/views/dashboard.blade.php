@@ -24,15 +24,15 @@
             </div>
         </div>
     </div>
-
-    <!-- Earnings (Monthly) Card Example -->
+@if (auth()->user()->company)
+    <!-- Total riders -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                           <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="{{route('company.riders.create')}}">Total Riders</a></div>
+                        <a class="text-xs font-weight-bold text-success text-uppercase mb-1" href="{{route('company.riders.create')}}">Total Riders</a></div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{optional(auth()->user()->company)->no_of_riders}}</div>
                     </div>
                     <div class="col-auto">
@@ -43,20 +43,20 @@
         </div>
     </div>
 
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Company Pending Requests -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            <a class="text-xs font-weight-bold text-info text-uppercase mb-1" href="{{route('company.route.create')}}">Pending Requests</a>
+                            <a class="text-xs font-weight-bold text-info text-uppercase mb-1" href="{{route('company.daily.request')}}">Daily Pending Requests</a>
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
                                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{$companyRequest}}</div>
                             </div>
-                           
+                        
                         </div>
                     </div>
                     <div class="col-auto">
@@ -66,14 +66,14 @@
             </div>
         </div>
     </div>
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Assigned Orders -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                            <a class="text-xs font-weight-bold text-info text-uppercase mb-1" href="{{route('company.daily.order')}}">Assigned Requests</a>
+                            <a class="text-xs font-weight-bold text-info text-uppercase mb-1" href="{{route('company.daily.order')}}">Accepted Requests</a>
                         </div>
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
@@ -81,7 +81,7 @@
                                     {{$assignedOrders}}
                                 </div>
                             </div>
-                           
+                        
                         </div>
                     </div>
                     <div class="col-auto">
@@ -91,7 +91,7 @@
             </div>
         </div>
     </div>
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Order Transit -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
@@ -103,10 +103,10 @@
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
                                 <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                    {{$assignedOrders}}
+                                    {{$orderInTransit}}
                                 </div>
                             </div>
-                           
+                        
                         </div>
                     </div>
                     <div class="col-auto">
@@ -116,7 +116,7 @@
             </div>
         </div>
     </div>
-    <!-- Earnings (Monthly) Card Example -->
+    <!-- Completed Orders -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-info shadow h-100 py-2">
             <div class="card-body">
@@ -131,7 +131,7 @@
                                     {{$completedOrders}}
                                 </div>
                             </div>
-                           
+                        
                         </div>
                     </div>
                     <div class="col-auto">
@@ -149,7 +149,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            <a class="text-xs font-weight-bold text-warning text-uppercase mb-1" href="{{route('company.daily.request')}}">Pool Requests</a></div>
+                            <a class="text-xs font-weight-bold text-warning text-uppercase mb-1" href="{{route('company.daily.pool')}}">Pool Requests</a></div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{$pending}}</div>
                     </div>
                     <div class="col-auto">
@@ -159,6 +159,8 @@
             </div>
         </div>
     </div>
+    
+@endif
     @endcan
     @can('admin')
     <div class="col-xl-3 col-md-6 mb-4">
@@ -210,7 +212,6 @@
                         <th>Departure Time</th>
                         <th>Status</th>
                         <th>Routes</th>
-                        <th>Pending Requests</th>
                         <th></th>
                     </x-slot>
     
@@ -218,7 +219,7 @@
                         @forelse($dailyRoutes as $dailyRoute)
                         @php
                             $direction = $dailyRoute->directions->pluck('name')->toArray();
-                            $requests = $services->routeRequest($dailyRoute->id);
+                            #$requests = $services->routeRequest($dailyRoute->id);
                         @endphp
                         <tr>
                             <td>{{$dailyRoute->departure}}</td>
@@ -226,11 +227,9 @@
                             <td>
                                {{implode(' >> ', $direction)}}
                             </td>
+                           
                             <td>
-                                {{count($requests) ?? 0}}
-                            </td>
-                            <td>
-                                @if (count($requests))
+                                @if (false)
                                     <a href="{{route('company.route.request', $dailyRoute->id)}}"
                                         class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
                                         data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
@@ -246,7 +245,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3">no rider created</td>
+                            <td colspan="3">no route created</td>
                         </tr>
                         
                         @endforelse
@@ -290,21 +289,21 @@
                             <td>{{$order->status}}</td>
                             <td>{{$date}}</td>
                             <td>
-                                <a href="{{route('company.order.show', $order->id)}}"
+                                {{-- <a href="{{route('company.order.show', $order->id)}}"
+                                    class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
+                                    data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
+                                    <i class="fa fa-eye"></i>
+                                </a> --}}
+                                <a href="{{ route('rider.order', [$order->id]) }}"
                                     class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
                                     data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                {{-- <a href="{{ route('company.riders.edit', [$company->id, $rider->id]) }}"
-                                    class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
-                                    data-toggle="tooltip" data-placement="bottom" title="Edit" data-original-title="Edit">
-                                    <i class="fa fa-pencil"></i>
-                                </a> --}}
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="3">no rider created</td>
+                            <td colspan="9">No Order as been assigned to you</td>
                         </tr>
                         
                         @endforelse
@@ -326,6 +325,13 @@
                 </p>
             </x-base.card>
         @endcan
+        @if(!in_array(auth()->user()->type, ['rider','company', 'admin']))
+        <x-base.card title="Dasboard">
+            {{ __('You are logged in!') }}
+            <p class="my-3">You are logged in as a customer</p>
+            <p> We are happy to have you has a customer with Booklogistic </p>
+        </x-base.card>
+        @endif
         
     </div>
 </div>

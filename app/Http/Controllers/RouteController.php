@@ -33,8 +33,8 @@ class RouteController extends Controller
     public function create()
     {
         $company = auth()->user()->company;
-        $dailyRoutes = $this->companyRouteService->dailyRoute($company->id);
-        $riders = $company->riders;
+        $dailyRoutes = $company ? $this->companyRouteService->dailyRoute($company->id) : [];
+        $riders = $company->riders ?? [];
         $services = $this->companyRouteService;
         return view("company.routes.create", compact('company', 'dailyRoutes', 'services', 'riders'));
     }

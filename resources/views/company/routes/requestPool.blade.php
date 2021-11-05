@@ -13,8 +13,8 @@
                     <th></th>
                     <th>Pickup Address</th>
                     <th>Delivery Address</th>
-                    <th>Customer Name</th>
-                    <th>Customer Phone</th>
+                    {{-- <th>Customer Name</th>
+                    <th>Customer Phone</th> --}}
                     <th></th>
                 </x-slot>
 
@@ -28,8 +28,8 @@
                         <td></td>
                         <td>{{$placeRequest->pickup_address}}</td>
                         <td>{{$placeRequest->delievery_address}}</td>
-                        <td>{{$placeRequest->customer->name}}</td>
-                        <td>{{$placeRequest->customer->phone}}</td>
+                        {{-- <td>{{$placeRequest->customer->name}}</td>
+                        <td>{{$placeRequest->customer->phone}}</td> --}}
                         <td>
                             <a href="{{route('request.pending', $placeRequest->id)}}"
                                 class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
@@ -45,7 +45,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="3">No Requests found</td>
+                        <td colspan="5">No Requests found</td>
                     </tr>
                     
                     @endforelse

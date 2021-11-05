@@ -4,12 +4,22 @@
 <div class="row mb-4">
     <div class="col-12">
         <x-base.card title="Customer Information">
+            @php
+            // $direction = $dailyRoute->directions->pluck('name')->toArray();
+            // $requests = $services->placeRequest($dailyRoute->id);
+            $user = auth()->user();
+            $balance = $user->balance();
+            $canView = !$user->isOwing() && $placeRequest->hasEnoughBalance($balance);
+            $customer = $placeRequest->customer;
+            @endphp
             <x-slot name="action">
-               <span>Order Status: {{$order->status}}</span>
+            @if (!$canView)
+                <p class="text-danger"><small>Sorry, you do not have enough funds to view the customer details. </small> <a href="{{route('company.wallet')}}" class='btn btn-sm btn-success'>Fund Wallet</a></p>
+            @else
+            <span>Order Status: {{$order->status}}</span>
+            @endif
             </x-slot>
-                @php
-                    $customer = $placeRequest->customer;
-                @endphp
+          
                 <div class="form-row">
                     <x-base.form-group label="Customer Name" required class="col-md-4">
                         <x-base.input disabled required :value="$customer->name" name="rider_name"/>
@@ -20,11 +30,34 @@
                     <x-base.form-group label="Customer Phone Number" required class="col-md-4">
                         <x-base.input disabled required :value="$customer->phone" name="rider_phone" />
                     </x-base.form-group>
-                    <x-base.form-group label="Pickup Address" required class="col-md-4">
+                    <x-base.form-group label="Pickup Address" required class="col-md-12">
                         <x-base.input disabled required :value="$placeRequest->pickup_address" name="rider_address" />
                     </x-base.form-group>
-                    <x-base.form-group label="Delievery Address" required class="col-md-4">
+                    @if ($placeRequest->pickup_more_details)
+                    <x-base.form-group label="More Details on Pickup Address" required class="col-md-12">
+                        <x-base.input disabled required :value="$placeRequest->pickup_more_details" name="rider_address" />
+                    </x-base.form-group>
+                    @endif
+                    <x-base.form-group label="Delievery Address" required class="col-md-12">
                         <x-base.input disabled required :value="$placeRequest->delievery_address" name="rider_address" />
+                    </x-base.form-group>
+                    @if ($placeRequest->delievery_address)
+                    <x-base.form-group label="More Details on Delievery Address" required class="col-md-12">
+                        <x-base.input disabled required :value="$placeRequest->delievery_address" name="rider_address" />
+                    </x-base.form-group>
+                        
+                    @endif
+                    <x-base.form-group label="Delievery Type" required class="col-md-4">
+                        <x-base.input disabled required :value="$placeRequest->type" name="type" />
+                    </x-base.form-group>
+                    <x-base.form-group label="Distance" required class="col-md-4">
+                        <x-base.input disabled required :value="$placeRequest->distance" name="distance" />
+                    </x-base.form-group>
+                    <x-base.form-group label="Amount" required class="col-md-4">
+                        <x-base.input disabled required :value="$placeRequest->amount" name="amount" />
+                    </x-base.form-group>
+                    <x-base.form-group label="Payment By" required class="col-md-4">
+                        <x-base.input disabled required :value="$placeRequest->payment" name="payment" />
                     </x-base.form-group>
                     <x-base.form-group label="Reciever Name" required class="col-md-4">
                         <x-base.input disabled required :value="$placeRequest->reciever_name" name="rider_name"/>

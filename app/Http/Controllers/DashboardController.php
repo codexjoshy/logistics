@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Company;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\CompanyRouteService;
 use App\Services\OrderService;
 use App\Services\PlaceRequestService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
@@ -29,11 +32,12 @@ class DashboardController extends Controller
         $pending = $this->requestService->numberOfPoolRequest();
         switch ($type) {
             case 'rider':
-                $company = $user->rider->company_id;
-                $dailyRoutes = $this->companyRouteService->dailyRoute($company, $user->rider->id);
+                $rider = $user->rider;
+                $company = $rider->company;
+                $dailyRoutes = $this->companyRouteService->dailyRoute($company->id, $rider->id);
                 $orders = Order::whereDate('created_at', Carbon::today())
-                ->where('id', $user->rider->id)->get();
-                return view('dashboard', compact('user','type', 'dailyRoutes', 'services', 'orders'));
+                ->where('rider_id', $rider->id)->get();
+                return view('dashboard', compact('user','type', 'dailyRoutes', 'services', 'orders', 'company', 'rider'));
                 break;
             case 'company':
                 $company = $user->company;
@@ -46,7 +50,7 @@ class DashboardController extends Controller
                 $completedOrders = $company ? $this->orderService->companyOrders($company->id, 'delievered') : [];
                 $completedOrders = count($completedOrders)?:0;
                 $orderInTransit = $company ? $this->orderService->companyOrders($company->id, 'in-transit') : [];
-                $completedOrders = count($orderInTransit)?:0;
+                $orderInTransit = count($orderInTransit)?:0;
                 return view('dashboard', compact('company', 'url', 'pending', 'companyRequest', 'assignedOrders', 'completedOrders', 'orderInTransit'));
                 break;
             case 'admin':
@@ -56,9 +60,35 @@ class DashboardController extends Controller
                 return view('dashboard', compact('registerdCompanies', 'pending'));
                 break;
             default:
-                # code...
+            return view('dashboard');
                 break;
         }
         
+    }
+    public function changePassword(Request $request)
+    {
+        return view('change-password');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        // dd($request->all());
+        $request->validate([
+            "old"=>[
+                "required",
+                function ($attribute, $value, $fail)
+                {
+                    $password = auth()->user()->password;
+                   if(!Hash::check($value, $password)){
+                       $fail('Please Enter your current password');
+                   }
+                }
+            ],
+            "password"=> ['required', 'string','confirmed'],
+            "password_confirmation"=> 'required|string'
+        ]);
+        $password = bcrypt($request->password);
+        User::find(Auth::id())->update(["password"=> $password]);
+        return back()->with('success', 'Password updated successfully');
     }
 }

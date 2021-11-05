@@ -21,7 +21,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'phone'
+        'phone',
+        'type', 
     ];
 
     /**
@@ -66,10 +67,26 @@ class User extends Authenticatable implements MustVerifyEmail
     }
     public function isOwing()
     {
-       return $this->balance() <= 0;
+       return $this->balance() < 106;
     }
     public function getNoOfRiders()
     {
         return count($this->company->riders);
+    }
+    public function getFirstNameAttribute()
+    {
+        if($this->name){
+            $names = explode(' ', $this->name);
+            return $names[0];
+        }
+        return false;
+    }
+    public function getLastNameAttribute()
+    {
+        if($this->name){
+            $names = explode(' ', $this->name);
+            return $names[1] ?? '';
+        }
+        return false;
     }
 }
