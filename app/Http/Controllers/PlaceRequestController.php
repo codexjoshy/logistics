@@ -9,12 +9,16 @@ use App\Models\PlaceRequest;
 use App\Models\Rider;
 use App\Models\Route;
 use App\Models\User;
+use App\Notifications\OrderRequestedNotification;
+use App\Notifications\RequestAcceptedNotification;
 use App\Services\CompanyRouteService;
+use App\Services\LogisticMsgs;
 use App\Services\OrderService;
 use App\Services\PlaceRequestService;
 use App\Services\TermiiService;
 use App\Services\TransactionService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -24,12 +28,10 @@ class PlaceRequestController extends Controller
     protected PlaceRequestService $requestService;
     protected OrderService $orderService;
     protected CompanyRouteService $companyRouteService;
-    protected TermiiService $termii;
     public function __construct(PlaceRequestService $requestService, OrderService $orderService, CompanyRouteService $companyRouteService, TermiiService $termiiService) {
         $this->requestService = $requestService;
         $this->orderService = $orderService;
         $this->companyRouteService = $companyRouteService;
-        $this->termii = $termiiService;
     }
     /**
      * Display a listing of the resource.
@@ -63,45 +65,76 @@ class PlaceRequestController extends Controller
         try {
             $user = auth()->user();
             $balance = $user->balance();
+            
             throw_if(!$placeRequest->hasEnoughBalance($balance), new LowBalanceException('Your Balance is too low to carry out operation, kindly credit your wallet to continue', 403));
+           
             DB::beginTransaction();
             $placeRequest->update(['status' => 'accepted']);
             $requestAmount = $placeRequest->minimum_company_balance;
-            //TODO generate otp for customer and
             $order = Order::create([
                 "request_id" => $placeRequest->id,
                 "rider_id"=> $request->rider,
                 "company_id"=> $user->company->id,
                 "status"=> 'accepted'
             ]);
+
             $customerOtp = $this->orderService->otpGenerator();
             $receiverOtp = $this->orderService->otpGenerator();
             $rider = Rider::findOrFail($request->rider);
             $order->update(['customer_otp'=> $customerOtp,'reciever_otp'=>$receiverOtp]);
+
             $riderPhone = $rider->user->phone;
             $company = $rider->company->name;
-            $receiverPhone = $placeRequest->reciever_phone;
-            $receiverName = $placeRequest->reciever_name;
-            $sender = $placeRequest->customer;
             $pickup = $placeRequest->pickup_address;
-            $deliever = $placeRequest->deliver_address;
-            $amount = null;
-            // send sms to receiver
-            $this->termii->sendToRider(displayPhone($riderPhone), $pickup, $sender->name,$sender->phone, $receiverName, $receiverPhone, $deliever);
-            $this->termii->sendToReceiver(displayPhone($receiverPhone), $sender->name, $receiverName, $receiverOtp, $amount);
-            $this->termii->sendToSender(displayPhone($sender->phone), $sender->name, displayPhone('08065009200'), $company, $customerOtp, $order->code);
-            // dd($send);
-            //debit company for accepting
+            $destination = $placeRequest->delievery_address;
+ 
+            $sender = $placeRequest->customer;
+            $amount = $placeRequest->amount;
+
+            $senderInfo = ["name"=> $sender->name, "phone"=> displayPhone($sender->phone)];
+            $recipient = ["name"=> $placeRequest->reciever_name, "phone"=> displayPhone($placeRequest->reciever_phone)];
+            $riderInfo = ["name"=> $rider->riderNames()['firstName'], "phone"=> displayPhone($riderPhone)];
+            $pickupInfo = [$pickup];
+            if ($placeRequest->pickup_more_details) {
+               $pickupInfo[] = $placeRequest->pickup_more_details;
+            }
+            $destinationInfo = [$destination];
+            if($placeRequest->destination_more_details) {
+                $destinationInfo[] = $placeRequest->destination_more_details;
+            }
+            
+            $type = $placeRequest->type;
+
+
+            $SendSms = new LogisticMsgs($senderInfo, $recipient, $riderInfo, $company);
+            //to riders 
+            $toRider = $SendSms->sendOTP('rider', '0', $amount, $pickupInfo, $destinationInfo, $order->code, $type);
+            // if ($toRider['error']) {
+            //     throw new Exception($toRider['error']);
+            // }
+            $toReci = $SendSms->sendOTP('receiver', $receiverOtp, $placeRequest->payment != 'sender' ? $amount : null, $pickupInfo, $destinationInfo,  $order->code, $type);
+            // if ($toReci['error']) {
+            //     throw new Exception($toReci['error']);
+            // }
+            
+            $toSender = $SendSms->sendOTP('sender', $customerOtp, $placeRequest->payment == 'sender' ? $amount : null, $pickupInfo, $destinationInfo, $order->code, $type);
+            // if ($toSender['error']) {
+            //     throw new Exception($toSender['error']);
+            // }           
+
             (new TransactionService)->debit($user->id, $requestAmount, "Debit for Order {$order->code}");
             DB::commit();
-            // DB::afterCommit(function()use($order, $user, $customerOtp){
-              
-                //TODO send sms to customer
-                // (new TermiiService)->sendSMS('BOOK LGSTC', '08135978939', "Item OTP is: $customerOtp");
-                //TODO send sms to rider
-                //TODO send sms to reciever
-            // });
+            //debit company for accepting
+            $riderMsg = "Dear rider, you have been assigned to pick an order for delivery. Click the link below to view details";
+            $rider->user->notify(new RequestAcceptedNotification($riderMsg, '/dashboard'));
+            $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. 
+            You can use the order id  and otp to track your delivery request.
+            Order ID : order-{$order->code} 
+            OTP code:$customerOtp
+            booklogistic.com/#track";
+            $sender->notify(new RequestAcceptedNotification($senderMsg, '/#track'));
         } catch (\Throwable $th) {
+            DB::rollback();
             return back()->with('error', "Sorry we couldn't create order for this request, Kindly Contact Support with this message: ". $th->getMessage());
         }
         return back()->with('success', 'Order Created successfully');
@@ -175,8 +208,8 @@ class PlaceRequestController extends Controller
             "amount"=> 'required|numeric',
             "distance"=> 'required|string',
             "payment"=> 'required|string',
-            "moreDestination"=>'sometimes|string',
-            "morePickup"=> 'sometimes|string',
+            "moreDestination"=>'nullable|string',
+            "morePickup"=> 'nullable|string',
         ]);
 
         [
@@ -197,6 +230,7 @@ class PlaceRequestController extends Controller
                 "description"=> $description, "status"=> 'pending', "amount"=> $amount, "distance"=> $distance, "type"=> $type, 
                 "payment"=> $payment, "pickup_more_details"=>$request->morePickup, "destination_more_details"=>$request->moreDestination
             ]);
+            
             if ($request->companyId) {
                 //TODO send mail
                 // $order = Order::create([
@@ -205,7 +239,11 @@ class PlaceRequestController extends Controller
                 //     "status"=> 'pending'
                 // ]);
                 $placeRequest->update(['company_id' => $request->companyId]);
+                $company = Company::find($request->companyId);
+                $user = $company->user;
+                $user->notify(new OrderRequestedNotification);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();

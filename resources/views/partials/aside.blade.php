@@ -27,7 +27,7 @@
                         <i class="fa fa-money"></i>
                     </x-slot>
                 </x-aside-link>
-                <x-aside-dropdown title="Route & Riders MGT" key="riders">
+                <x-aside-dropdown title="Riders & Route MGT" key="riders">
                     <x-slot name="icon">
                         <i class="fa fa-address-book"></i>
                     </x-slot>

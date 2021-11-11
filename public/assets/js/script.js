@@ -29,6 +29,7 @@ function checkIdInDOM(id) {
 }
 
 function initGooglePlaces(arrayOfDOMIds, handleDistance = false) {
+  console.log(arrayOfDOMIds);
   if (Array.isArray(arrayOfDOMIds)) {
     google.maps.event.addDomListener(window, 'load', function () {
       arrayOfDOMIds.forEach((id) => {
@@ -71,6 +72,7 @@ function calculateDistance2(lat, lng, destination) {
   let origin = new google.maps.LatLng(lat, lng);
   let service = new google.maps.DistanceMatrixService();
 
+  console.log('origin:',origin);
   service.getDistanceMatrix(
     {
       origins: [origin],

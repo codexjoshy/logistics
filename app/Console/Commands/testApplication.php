@@ -39,7 +39,8 @@ class testApplication extends Command
      */
     public function handle()
     {
+        dd(displayPhone('08065009200'));
         // return dd((new OrderService)->otpGenerator(2,5,9,3));
-        return dd((new TermiiService)->balance());
+        // return dd((new TermiiService)->balance());
     }
 }

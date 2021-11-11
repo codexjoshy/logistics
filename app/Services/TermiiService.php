@@ -5,18 +5,19 @@ use App\Interfaces\SmsInterface;
 use Illuminate\Http\JsonResponse;
 use Zeevx\LaraTermii\LaraTermii;
 
-class TermiiService implements SmsInterface
+class TermiiService
 {
     public LaraTermii $termii;
    //  protected $_from = "BOOK LGSTC";
-    protected $_from = "N-Alert";
+    protected $_from = "BOOK LGSTC";
+    protected $_channel = "dnd";
 
     public function __construct() {
        $this->termii =  new LaraTermii(config('services.sms.termii.key'));
     }
-    public function sendSMS(string $from, int $to, string $message){
+    public function sendSMS( int $to, string $message){
       //  $this->termii->allSenderId();
-       return $this->termii->sendMessage($to, $from, $message);
+       return $this->termii->sendMessage($to, $message, $this->_channel);
     }
 
     public function balance(){
@@ -28,37 +29,26 @@ class TermiiService implements SmsInterface
    }
    public function sendToRider($to, $address, $senderName, $senderPhone, $receiverName, $receiverPhone, $receiverAddress) 
    {
-      $message = "Pick up: $senderName($senderPhone) at  $address
-
-      Deliver: $receiverName($receiverPhone) $receiverAddress
-      Item:  ";
+      $message = "Pick up: $senderName($senderPhone) at  $address Deliver: $receiverName($receiverPhone) $receiverAddress";
       return $this->sendSMS($this->_from, $to, $message);
    }
    public function sendToReceiver($to, $senderName, $receiverName, $otp, $amount=null) 
    {
       $showAmt = $amount ? "Amount: $amount" : '';
       $message = "Hi, $receiverName, your item from $senderName is in transit.
-      Confirmation code: $otp, $showAmt";"
-      
-      booklogistic.com";
+      Confirmation code: $otp, $showAmt booklogistic.com";
       return $this->sendSMS($this->_from, $to, $message);
    }
    public function sendToSender($to, $senderName, $riderPhone, $companyName,  $otp, $order) 
    {
       $message = "Hi $senderName, riders_name ($riderPhone) of $companyName has been assigned to pick your item.
-      Confirmation code: $otp
-      Order_id: $order
-      
-      booklogistic.com";
+      Confirmation code: $otp. Order_id: $order booklogistic.com";
       return $this->sendSMS($this->_from, $to, $message);
    }
    public function deliveryMessage($to, $senderName, $riderPhone, $receiverName, $companyName) 
    {
       $message = "Hi $senderName, your item has been successfully delivered to $receiverName.
-      Thanks for your patronage
-      
-      $companyName
-      booklogistic.com";
+      Thanks for your patronage $companyName booklogistic.com";
       return $this->sendSMS($this->_from, $to, $message);
    }
    

@@ -90,8 +90,8 @@ function generateReceiptNo($no, $prefix = 'RE', $chars = 9, $padChar = '00000000
 }
 
 function displayPhone($phone){
-    $phone = (int) $phone;
-    $phone = "234"."$phone";
-    return floatval($phone);
-    
+    $intl_format = substr($phone, 1); //returns 8032537302
+    //now add 234 to intl_format
+    $intl_format = sprintf("%s%s", "234", $intl_format);
+    return intval($intl_format);
 }

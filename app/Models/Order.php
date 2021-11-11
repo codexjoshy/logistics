@@ -20,6 +20,10 @@ class Order extends Model
     {
         return $this->belongsTo(Rider::class);
     }
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
    
     public function getCodeAttribute()
     {

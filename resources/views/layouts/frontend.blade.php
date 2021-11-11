@@ -451,13 +451,13 @@
                         <div class="col">
                             <label>Item Description</label>
                           <textarea rows="5" placeholder="Item Description" name="description" class="form-control">
-
+                            {{old('description')}}
                               </textarea>
                         </div>
                         <div class="col">
                             <label>Delievery Note</label>
                           <textarea rows="5" placeholder="Delievery Note" class="form-control" name="note">
-
+                            {{old('note')}}
                               </textarea>
                         </div>
                       </div>
@@ -475,7 +475,7 @@
                             class="form-control mb-3" placeholder="Your Name">
                           <input required value="{{ request()->email }}" type="email" name="email"
                             class="form-control mb-3" placeholder="Email">
-                          <input required value="{{ request()->phone }}" type="text" name="phone" class="form-control"
+                          <input required="required" value="{{ request()->phone }}" type="number" name="phone" class="form-control"
                             placeholder="Phone Number">
                         </div>
 

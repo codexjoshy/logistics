@@ -315,7 +315,7 @@
                                 <label rel="more-pickup" class='d-flex justify-content-between more'>
                                     <input type="checkbox" rel="more-pickup"><small class="ml-3 more"
                                         rel="more-pickup"><strong>Provide more information on pickup location?(optional)
-                                    </strong></small>
+                                        </strong></small>
                                 </label>
                                 <div class="col-12  more-details my-md-2" id="more-pickup">
                                     <input type="text" name="morePickup" class="form-control col-12"
@@ -343,7 +343,7 @@
 
                     <div class="form-row mb-4">
                         <div class="col-12 mb-4">
-                            <input type="text" readonly name="distance" class="form-control" id="distance"
+                            <input type="text" value="{{old('distance')}}" readonly name="distance" class="form-control" id="distance"
                                 placeholder="Distance">
                         </div>
                         <div class="col-12 mb-4">
@@ -352,12 +352,12 @@
 
                             </div>
                             <div class="d-flex justify-content-between w-50 align-items-center">
-                                <label class="mr-2 pr-1" for="regular">
-                                    <input id="regular" rel="0" type="radio" name="type" value="regular"
+                                <label class="mr-2 pr-1" for="regular-0">
+                                    <input id="regular-0" rel="0" type="radio" name="type" value="regular"
                                         class='type' />Regular
                                 </label>
-                                <label for="express">
-                                    <input id="express" class='type' rel="0" type="radio" name="type"
+                                <label for="express-0">
+                                    <input id="express-0" class='type' rel="0" type="radio" name="type"
                                         value="express" />Express </label>
                             </div>
                         </div>
@@ -366,7 +366,7 @@
                     <div class="form-row mb-4" id="amountCont">
                         <div class="col-12 mb-4">
                             <input type="text" name="amount" readOnly class="form-control" id="amount"
-                                placeholder="Amount">
+                                placeholder="Amount" value="{{old('amount')}}">
                         </div>
                     </div>
                     <div class="form-row mb-4">
@@ -441,19 +441,154 @@
 <!-- Free Quote End -->
 @push('scripts')
 
-<script src="{{asset('assets/js/script.js')}}"></script>
+{{-- <script src="{{asset('assets/js/script.js')}}"></script> --}}
 <script>
+    // $(function(){
+    //     initGooglePlaces(['pickup', 'destination']);
+    // })
     $(function(){
-        initGooglePlaces(['pickup', 'destination']);
-      })
-      $('.more-details').hide();
-        $(function(){
+        $('.more-details').hide();
         $('.more').click(function(){
             let id = $(this).attr('rel');
             $(`#${id}`).toggle();
         })
-      })
+    })
 
+    $('#amountCont').hide();
+    $('.type').change(function () {
+        let type = $(this).val();
+        let id = $(this).attr('rel');
+        // alert(id)
+        handleAmountDisplay(type, id)
+
+    })
+    function handleAmountDisplay(type, id) {
+        // let distance = $(`#request-form-${id} #distance`).val();
+        let distance = document.querySelector(`#request-form-${id} #distance`).value;
+        // alert(distance);
+        distance = distance.split(' ')[0];
+        distance = parseFloat(distance);
+        // alert(distance)
+        if (distance) {
+        let amount = expressDelievery(distance);
+        // alert(amount[type])
+        $(`#request-form-${id} #amountCont`).show();
+        $(`#request-form-${id} #amount`).show().val(amount[type]);
+
+        }
+    }
+    function expressDelievery(distance) {
+
+        if (distance < 10) {
+            return {
+                regular: 1000,
+                express: 2000
+            }
+        }
+        if (distance < 20) {
+            return {
+                regular: 1500,
+                express: 2500
+            }
+        }
+        if (distance < 30) {
+            return {
+                regular: 2000,
+                express: 3500
+            }
+        }
+        if (distance < 40) {
+            return {
+                regular: 2500,
+                express: 4500
+            }
+        }
+        if (distance > 40) {
+            return {
+                regular: 3000,
+                express: 5500
+            }
+        }
+    }
 </script>
+<script type="text/javascript">
+    google.maps.event.addDomListener(window, 'load', function () {
+              ['destination', 'pickup'].forEach((id)=>{
+                handlePlaces(id, checkParamsForMatrix)
+              })
+            });
+            function checkParamsForMatrix() {
+              const long = $('.pickup-lng').val();
+              const lat = $('.pickup-lat').val();
+              const pickup = $('#pickup').val();
+              const destination = $('#destination').val();
+              if(long && lat && destination) {
+                distanceResponse = calculateDistance2(lat, long, destination);
+              }
+            }
+            function handlePlaces(id, fn) {
+              let places = new google.maps.places.Autocomplete(document.getElementById(id));
+                google.maps.event.addListener(places, 'place_changed', function () {
+                    let place = places.getPlace();
+                    let address = place.formatted_address;
+                    let latitude = place.geometry.location?.lat();
+                    let longitude = place.geometry.location?.lng();
+                    $(`.${id}-lng`).val(longitude);
+                    $(`.${id}-lat`).val(latitude);
+                    console.log('latitude',latitude, place.geometry.location.lng());
+                    let mesg = "Address: " + address;
+                    mesg += "\nLatitude: " + latitude;
+                    mesg += "\nLongitude: " + longitude;
+                    
+                    fn();
+                    // alert(mesg);
+                });
+            }
+            function calculateDistance(origin, destination) {
+              const apiKey = "{{config('app.google_api')}}";
+
+              var config = {
+                method: 'get',
+                url:`https://maps.googleapis.com/maps/api/distancematrix/json?origins=${origin}&destinations=${destination}&departure_time=now&key=${apiKey}`,
+                headers: { }
+              };
+
+              fetch(config)
+              // .then(res=>res.json())
+              .then(function (response) {
+                console.log(response);
+                return response
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+            }
+
+            function calculateDistance2(lat, lng, destination) {
+              let origin = new google.maps.LatLng(lat, lng);
+              let  service = new google.maps.DistanceMatrixService();
+            
+              service.getDistanceMatrix(
+                {
+                  origins: [origin],
+                  destinations: [destination],
+                  travelMode: google.maps.TravelMode.DRIVING,
+                  avoidHighways: false,
+                  avoidTolls: false
+                }, 
+                callback
+              );
+            }
+            function callback(response, status) {
+                // console.log(status);
+            //   let dist = document.getElementById("distance");
+              let dist = document.querySelector("#request-form-0 #distance");
+              if(status=="OK") {             
+                  dist.value = response.rows[0].elements[0].distance.text;
+              } else {
+                  alert("Error: " + status);
+              }
+            }
+  </script>
 @endpush
 @endsection

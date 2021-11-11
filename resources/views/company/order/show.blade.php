@@ -77,7 +77,7 @@
     </div>
     <div class="col-12 mt-4">
         @php
-            $code = "{$order->company_id}{$order->id}{$order->rider->id}";
+            $code = $order->code;
         @endphp
         <x-base.card title="Order Information">
             <x-slot name="action">

@@ -272,7 +272,7 @@
                         @forelse($orders as $order)
                         @php
                             $routeRequest = $order->companyRequest;
-                            $code = "{$order->company_id}{$order->id}{$order->rider->id}";
+                            $code = $order->code;
                             $date = $order->created_at->format('Y-m-d');
                             if ($order->created_at->format('Y-m-d') == now()->format('Y-m-d')) {
                                 $date = $order->created_at->diffForHumans();

@@ -44,9 +44,9 @@ class AjaxController extends Controller {
             return respondWithError([], "ORDER COULDN'T BE RETRIEVED");
         }
         $date = Carbon::parse($orderInfo->created_at)->format('D. M d,  Y. h:m:s a');
-        $details = ["orderDate"=>$date, "status"=> $orderInfo->status];
+        $customerInfo = $orderInfo->companyRequest->customer;
+        $details = ["orderDate"=>$date, "status"=> $orderInfo->status, "company"=>$orderInfo->company->company_name, "sender"=>$customerInfo->name, "recipient"=> $orderInfo->companyRequest->reciever_name];
         if(strtolower($orderInfo->customer_otp) == $otp){
-            $customerInfo = $orderInfo->companyRequest->customer;
             $details["name"] = $customerInfo->name;
             return respondWithSuccess($details);
         }elseif (strtolower($orderInfo->reciever_otp) == $otp) {
@@ -92,7 +92,7 @@ class AjaxController extends Controller {
         // return $error;
        
         $orderId = $orderId[0];
-        $orderInfo = Order::find($orderId);
+        $orderInfo = Order::with('companyRequest')->whereKey($orderId)->first();
         if (!$orderInfo) {
             $error = ["status"=>false, "message"=>"COULDN'T FIND ORDER WITH", "code"=>403];
             return $error;

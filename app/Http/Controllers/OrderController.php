@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Rider;
+use App\Services\LogisticMsgs;
 use App\Services\TransactionService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -125,19 +126,31 @@ class OrderController extends Controller
             $errorMsg = $error ? 'OTP mismatch' : '';
             return back()->with('error', 'Sorry unable to update the order.'. $errorMsg);
         }
+        $orderRequest = $order->companyRequest;
+        $sender = ["name"=>$orderRequest->customer->name, "phone"=>displayPhone($orderRequest->customer->phone)];
+        $recipient = ["name"=>$orderRequest->reciever_name, "phone"=>displayPhone($orderRequest->reciever_phone)];
+        $companyName = $order->company->company_name;
+        $LogisticApp = new LogisticMsgs($sender, $recipient);
         if ($order->status == 'in-transit') {
             try {
                 DB::beginTransaction();
                 $company = $order->rider->company->user->id;
-                $charges = $order->companyRequest()->minimum_company_balance;
-                $deliveryFee = $order->companyRequest()->amount;
+                $charges = $orderRequest->minimum_company_balance;
+                $deliveryFee = $orderRequest->amount;
                 $balance = $deliveryFee - $charges;
+                
+                $LogisticApp->deliveryMessage($companyName);
+
                 (new TransactionService)->credit($company, $balance, "Wallet crediting for ".$order->code, auth()->id());
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollback();
                 return back()->with('error','Sorry unable to update your wallet at this time');
             }
+        }
+        if ($order->status == 'accepted') {
+            $riderName = $order->rider->user->name;
+            $LogisticApp->itemPickedMessage($companyName, $riderName);
         }
         $order->update($data);
 

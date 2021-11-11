@@ -18,12 +18,20 @@
                     <p>Pickup : {{$companyRequest ? $companyRequest->pickup_address : ''}}</p>
                     <p>Destination: {{$companyRequest ? $companyRequest->delievery_address : ''}}</p>
                 </div>
-                <x-base.form-group label="Enter OTP" required class="col-md-6">
-                    <x-base.input type="text" required :value="old('otp')" name="otp"/>
-                </x-base.form-group>
-                <x-base.button class="btn-primary">
-                    Submit
-                </x-base.button>
+                
+                @if ($order->status == 'delievered')
+                    <div>
+                        <p>Item Delivered Successfully</p>
+                    </div>
+                @else
+                    <x-base.form-group label="Enter OTP" required class="col-md-6">
+                        <x-base.input type="text" required :value="old('otp')" name="otp"/>
+                    </x-base.form-group>
+                    <x-base.button class="btn-primary">
+                        Submit
+                    </x-base.button>
+                    
+                @endif
             </x-base.form>
         </x-base.card>
     </div>

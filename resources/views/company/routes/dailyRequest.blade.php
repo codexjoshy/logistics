@@ -27,8 +27,8 @@
                     <th></th>
                     <th>Pickup Address</th>
                     <th>Delivery Address</th>
-                    <th>Customer Name</th>
-                    <th>Customer Phone</th>
+                    {{-- <th>Customer Name</th>
+                    <th>Customer Phone</th> --}}
                     <th></th>
                 </x-slot>
 
@@ -37,16 +37,18 @@
                     @forelse($placeRequests as $placeRequest)
                     <tr>
                         <td></td>
-                        <td>{{$canView ? $placeRequest->pickup_address : ''}}</td>
-                        <td>{{$canView ? $placeRequest->delievery_address : ''}}</td>
-                        <td>{{$placeRequest->customer->name}}</td>
-                        <td>{{$canView ? $placeRequest->customer->phone : ''}}</td>
+                        <td>{{$placeRequest->pickup_address }}</td>
+                        <td>{{$placeRequest->delievery_address }}</td>
+                        {{-- <td>{{$placeRequest->customer->name}}</td>
+                        <td>{{$canView ? $placeRequest->customer->phone : ''}}</td> --}}
                         <td>
-                            <a href="{{route('request.pending', $placeRequest->id)}}"
-                                class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
-                                data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
-                                <i class="fa fa-eye"></i>
-                            </a>
+                            @if ($canView)
+                                <a href="{{route('request.pending', $placeRequest->id)}}"
+                                    class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
+                                    data-toggle="tooltip" data-placement="bottom" title="View" data-original-title="View">
+                                    <i class="fa fa-eye"></i>
+                                </a>
+                            @endif
                             {{-- <a href="{{ route('company.riders.edit', [$company->id, $rider->id]) }}"
                                 class="btn btn-datatable btn-icon btn-transparent-dark btn-primary mr-2"
                                 data-toggle="tooltip" data-placement="bottom" title="Edit" data-original-title="Edit">
