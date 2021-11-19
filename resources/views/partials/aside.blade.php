@@ -51,13 +51,7 @@
                 @endcan
 
                 @can('admin')
-                <x-aside-dropdown title="Company Management" key="company">
-                    <x-slot name="icon">
-                        <i class="fa fa-address-book"></i>
-                    </x-slot>
-                    <x-aside-dropdown-item :href="route('admin.company.pending')" title="Pending" />
-                    <x-aside-dropdown-item :href="route('admin.company.index')" title="Register" />
-                </x-aside-dropdown>
+                @include('partials.asides.admin')
                 @endcan
                 <x-aside-link :href="route('change.password')" title="Change Password">
                     <x-slot name="icon">

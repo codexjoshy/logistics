@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Price;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class AjaxController extends Controller {
 
@@ -98,6 +100,26 @@ class AjaxController extends Controller {
             return $error;
         }
         return ["status"=>true, "message"=> $orderInfo];
+    }
+
+    public function getPriceByDistance(Request $request)
+    {
+        $distance = $request->distance;
+        $deliveryType = $request->type;
+        $priceList = Price::find(1)->distance_price;
+        
+        $priceList = collect($priceList);
+        $data = $priceList->filter(function ($price, $key)use($distance){
+            return  $distance >= $price['from']  && $distance <= $price['to'];
+        });
+        $data = $data->values();
+        if($data && count($data)){
+            $data = $data[0][$deliveryType];
+        }else{
+            $data = 10000;
+        }
+        return respondWithSuccess($data, "Price generated", 200);
+
     }
 }
 

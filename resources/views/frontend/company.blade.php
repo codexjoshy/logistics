@@ -470,14 +470,27 @@
         distance = parseFloat(distance);
         // alert(distance)
         if (distance) {
-        let amount = expressDelievery(distance);
-        // alert(amount[type])
-        $(`#request-form-${id} #amountCont`).show();
-        $(`#request-form-${id} #amount`).show().val(amount[type]);
+            // alert(amount[type])
+            $(`#request-form-${id} #amountCont`).show();
+            // $(`#request-form-${id} #amount`).show().val(amount);
+            let idSelected = `#request-form-${id} #amount`;
+            let amount = expressDelievery(distance, type, idSelected);
 
         }
     }
-    function expressDelievery(distance) {
+    function expressDelievery(distance, type, id) {
+        const _token = "{{csrf_token()}}";
+        $.ajax({
+            url:"{{route('generate.price')}}",
+            type: 'POST',
+            data:{distance, type, _token},
+            success: function (data){
+                let amount = data?.payload;
+                $(id).show().val(amount);
+            }
+        })
+
+        return;
 
         if (distance < 10) {
             return {

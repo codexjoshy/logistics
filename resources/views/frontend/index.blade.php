@@ -54,7 +54,7 @@
           <div class="col pl-0">
             <h5 class="mb-3 h5-xs fw-6">EMAIL US</h5>
             <div class="text">
-              <a href="#" class="link-light">info@booklogistic.com</a><br>
+              {{-- <a href="#" class="link-light">info@booklogistic.com</a><br> --}}
               <a href="#" class="link-light">support@booklogistic.com</a>
             </div>
           </div>
@@ -117,29 +117,31 @@
                 placeholder="Enter Pickup Location">
               <div class="form-row mb-1">
                 <label rel="more-pickup" class='d-flex justify-content-between more'>
-                  <input type="checkbox"  rel="more-pickup"><small class="ml-3 more" rel="more-pickup"><strong>Provide more information on  pickup location ?</strong></small>
+                  <input type="checkbox" rel="more-pickup"><small class="ml-3 more" rel="more-pickup"><strong>Provide
+                      more information on pickup location ?</strong></small>
                 </label>
               </div>
             </div>
             <div class="form-row mb-4 more-details" id="more-pickup">
               <input type="text" name="morePickup" class="form-control" placeholder="more details for pickup">
             </div>
-            
+
             {{-- <span class="pickup">pickup</span> --}}
             <div class="form-row mb-4">
               <input type="hidden" name="lng" class="pickup-lng" value="" />
               <input type="hidden" name="lat" class="pickup-lat" value="" />
               <input type="text" name="destination" id="destination" class="form-control txtPlaces"
                 placeholder="Enter Destination">
-                <div class="form-row mb-1">
-                  <label rel="more-destination" class='d-flex justify-content-between more'>
-                    <input type="checkbox" rel="more-destination"><small class="ml-3 more" rel="more-destination"><strong>Provide more information on  pickup location ?</strong></small>
-                  </label>
-                </div>
+              <div class="form-row mb-1">
+                <label rel="more-destination" class='d-flex justify-content-between more'>
+                  <input type="checkbox" rel="more-destination"><small class="ml-3 more"
+                    rel="more-destination"><strong>Provide more information on pickup location ?</strong></small>
+                </label>
               </div>
-              <div class="form-row mb-4 more-details" id="more-destination">
-                <input type="text" name="moreDestination" class="form-control" placeholder="more details for pickup">
-              </div>
+            </div>
+            <div class="form-row mb-4 more-details" id="more-destination">
+              <input type="text" name="moreDestination" class="form-control" placeholder="more details for pickup">
+            </div>
             {{-- <span class="destination">destination</span> --}}
             {{-- <div class="form-row mb-4">
               <div class="col-6 mb-4">
@@ -195,7 +197,7 @@
               class="icofont-rounded-right"></i></button>
         </form>
         <div id="response">
-          
+
         </div>
         <!-- Tracking Form -->
 
@@ -308,50 +310,63 @@
   </script>
   <script>
     $(function(){
-            $('#amountCont').hide();
-            $('.type').change(function() {
-              let type = $(this).val();
-              let distance = $('#distance').val();
-              distance = parseFloat(distance);
-              let amount = expressDelievery(distance);
-              $('#amountCont').show();
-              $('#amount').show().val(amount[type]);
+      $('#amountCont').hide();
+      $('.type').change(function() {
+        let type = $(this).val();
+        let distance = $('#distance').val();
+        distance = parseFloat(distance);
+        $('#amountCont').show();
+        $('#amount').show().val(amount);
+        let idSelected = `#amount`;
+        let amount = expressDelievery(distance, type, idSelected);
 
-            })
-          })
-          function expressDelievery(distance) {
-            
-            if (distance < 10) {
-              return {
-                regular:1000,
-                express: 2000
-              }
-            }
-            if (distance < 20) {
-              return {
-                regular:1500,
-                express: 2500
-              }
-            }
-            if (distance < 30) {
-              return {
-                regular:2000,
-                express: 3500
-              }
-            }
-            if (distance < 40) {
-              return {
-                regular:2500,
-                express: 4500
-              }
-            }
-            if (distance < 50) {
-              return {
-                regular:3000,
-                express: 5500
-              }
-            }
+      })
+    })
+    function expressDelievery(distance, type, id) {
+      const _token = "{{csrf_token()}}";
+      $.ajax({
+          url:"{{route('generate.price')}}",
+          type: 'POST',
+          data:{distance, type, _token},
+          success: function (data){
+            let amount = data?.payload;
+            $(id).show().val(amount);
           }
+      })
+
+        return;
+
+      if (distance < 10) {
+          return {
+              regular: 1000,
+              express: 2000
+          }
+      }
+      if (distance < 20) {
+          return {
+              regular: 1500,
+              express: 2500
+          }
+      }
+      if (distance < 30) {
+          return {
+              regular: 2000,
+              express: 3500
+          }
+      }
+      if (distance < 40) {
+          return {
+              regular: 2500,
+              express: 4500
+          }
+      }
+      if (distance > 40) {
+          return {
+              regular: 3000,
+              express: 5500
+          }
+      }
+    }
   </script>
   <script type="text/javascript">
     google.maps.event.addDomListener(window, 'load', function () {

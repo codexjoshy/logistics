@@ -40,11 +40,18 @@ class FrontendController extends Controller
         //     $myRoute = Route::where('id', $route->route_id)->first();
         //    return $route->setRelation('route', $myRoute);
         // })->pluck('route');
-       $routes =  RouteDirection::with('route')->where('name', 'like', "%$pickup%")
-            ->orWhere('name', 'like', "%$destination%")
-            ->whereBetween('created_at', [$startDay, $endDay])
-            ->get()
-            ->pluck('route');
+        //    $routes =  RouteDirection::with('route')->where('name', 'like', "%$pickup%")
+        //         ->orWhere('name', 'like', "%$destination%")
+        //         ->whereBetween('created_at', [$startDay, $endDay])
+        //         ->get()
+        //         ->pluck('route');
+
+        $routes = DB::select(DB::raw("SELECT * FROM route_directions WHERE  MATCH(name) AGAINST ('$pickup'  IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)   AND  created_at between '$startDay' AND '$endDay'" ));
+        $routes = RouteDirection::hydrate($routes);
+        $routes = $routes->map(function($route){
+            $myRoute = Route::where('id', $route->route_id)->first();
+            return $route->setRelation('route', $myRoute);
+        })->pluck('route');
         return view("frontend.result", compact('routes'));
     }
     public function contact(Request $request)
@@ -61,12 +68,15 @@ class FrontendController extends Controller
         Notification::send(new ContactUsNotification($request->email, $request->phone, $request->message));
         return back()->with('success', 'Thank you for contacting us. We will contact you with details provided');
     }
-    public function requestCompany(Request $request)
+    public function requestCompany(Request $request, string $name)
     {
-        if(!$request->name) return redirect()->route('frontend.index')->with('error', 'Sorry we could not find the link you requested. Please try again with a different link.');
-        $request->validate(['name'=> 'required', 'string','exists:companies,company_name']);
+        if(!$name) return redirect()->route('frontend.index')->with('error', 'Sorry we could not find the link you requested. Please try again with a different link.');
+        // $request->validate(['name'=> 'required', 'string','exists:companies,company_name']);
+        $companyName = explode('-', $name);
+        $companyName = implode(' ', $companyName);
+
         try {
-            $company = Company::where('company_name', $request->name)->first();
+            $company = Company::where('username', $companyName)->first();
             
             throw_if(!$company, new Exception('Could not find the company you requested.'));
         } catch (\Throwable $th) {

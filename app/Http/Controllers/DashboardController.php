@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use App\Models\Order;
-use App\Models\User;
-use App\Services\CompanyRouteService;
-use App\Services\OrderService;
-use App\Services\PlaceRequestService;
 use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Company;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\OrderService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Services\CompanyRouteService;
+use App\Services\PlaceRequestService;
 
 class DashboardController extends Controller
 {
@@ -41,7 +42,10 @@ class DashboardController extends Controller
                 break;
             case 'company':
                 $company = $user->company;
-                $url = $company ? url('/')."/request/company/?name={$company->company_name}":'';
+               
+                $name = str_replace("26","&",$company->username);
+                // $name = urldecode($name);
+                $url = $company ? url('/')."/operator/{$name}":'';
                 $companyRequest = $company ? $this->requestService->companyPendingRequest($company->id) :0;
                 $pendingOrders = $company ? $this->orderService->companyOrders($company->id, 'pending') : 0;
                 $pendingOrders = $pendingOrders ? count($pendingOrders) : 0;
@@ -51,7 +55,8 @@ class DashboardController extends Controller
                 $completedOrders = count($completedOrders)?:0;
                 $orderInTransit = $company ? $this->orderService->companyOrders($company->id, 'in-transit') : [];
                 $orderInTransit = count($orderInTransit)?:0;
-                return view('dashboard', compact('company', 'url', 'pending', 'companyRequest', 'assignedOrders', 'completedOrders', 'orderInTransit'));
+                $groupUrl = "https://chat.whatsapp.com/LRp0BKTwayl59OlLuZ4Pul";
+                return view('dashboard', compact('company', 'url', 'pending', 'companyRequest', 'assignedOrders', 'completedOrders', 'orderInTransit', 'groupUrl'));
                 break;
             case 'admin':
                 // $url = url('/')."/request/company/?name={$company->company_name}";

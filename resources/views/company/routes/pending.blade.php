@@ -64,6 +64,9 @@
                     <x-base.form-group label="Amount" required class="col-md-4">
                         <x-base.input disabled required :value="$canView ? $placeRequest->amount : '' " name="amount" />
                     </x-base.form-group>
+                    <x-base.form-group label="Payment By" required class="col-md-4">
+                        <x-base.input disabled required :value="$canView ? $placeRequest->payment : '' " name="payment" />
+                    </x-base.form-group>
 
                     <x-base.form-group label="Item Description" required class="col-md-4">
                         <x-base.textarea disabled required name="rider_phone">

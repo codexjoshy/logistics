@@ -127,11 +127,7 @@ class PlaceRequestController extends Controller
             //debit company for accepting
             $riderMsg = "Dear rider, you have been assigned to pick an order for delivery. Click the link below to view details";
             $rider->user->notify(new RequestAcceptedNotification($riderMsg, '/dashboard'));
-            $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. 
-            You can use the order id  and otp to track your delivery request.
-            Order ID : order-{$order->code} 
-            OTP code:$customerOtp
-            booklogistic.com/#track";
+            $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. You can use the order id  and otp to track your delivery request. Order ID : order-{$order->code} OTP code:$customerOtp. booklogistic.com/#track";
             $sender->notify(new RequestAcceptedNotification($senderMsg, '/#track'));
         } catch (\Throwable $th) {
             DB::rollback();
@@ -150,7 +146,6 @@ class PlaceRequestController extends Controller
      */
     public function store(Request $request, Route $route)
     {
-
         $request->validate([
             "pickup"=> 'required|string',
             "delievery" => 'required|string',
@@ -170,18 +165,24 @@ class PlaceRequestController extends Controller
         [
             "pickup"=> $pickup, "delievery"=> $delievery,
             "recieverName"=> $recieverName, "recieverPhone"=> $recieverPhone, "name"=> $name,
-            "email"=> $email, "phone"=> $phone, "note"=> $note, "payment"=>$payment
+            "email"=> $email, "phone"=> $phone, "note"=> $note, "payment"=>$payment, "amount"=>$amount,
+            "distance"=>$distance, "type"=> $type,
         ] = $request->all();
 
         $user = User::updateOrCreate(['email' => $email], [
             "phone" => $phone, "name"=> $name, 
             "type"=> 'customer', "password"=>Hash::make('password')
         ]);
+        $company = $route->rider->company;
         PlaceRequest::create([
             "user_id" => $user->id, "pickup_address"=> $pickup, "delievery_address"=> $delievery,
             "reciever_name"=> $recieverName, "reciever_phone"=> $recieverPhone, "route_id"=> $route->id, 
+            "amount"=> $amount, "distance"=> $distance, "type"=> $type, "company_id"=> $company->id,
             "note"=> $note, "payment"=> $payment, "pickup_more_details"=>$request->morePickup, "destination_more_details"=>$request->moreDestination
         ]);
+
+        $user = $company->user;
+        $user->notify(new OrderRequestedNotification);
         return redirect()->route('success')->with('success', 'Your request was sent successfully. You will be notified shortly with the details you provided.');
     }
 

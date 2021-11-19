@@ -110,38 +110,43 @@ class OrderController extends Controller
     {
         $data = [];
         $error = false;
-        if ($order->status == 'accepted') {
-            $validate = ["otp"=> 'required|string|exists:orders,customer_otp'];
-            $data = ["status"=> 'in-transit'];
-            $error = $order->customer_otp != $request->otp;
-        }
-        if ($order->status == 'in-transit') {
-            $validate = ["otp"=> 'required|string|exists:orders,reciever_otp'];
-            $data = ["status"=> 'delievered'];
-            $error = $order->reciever_otp != $request->otp;
-        }
-        $request->validate($validate);
 
-        if(!count($data) || $error) {
-            $errorMsg = $error ? 'OTP mismatch' : '';
-            return back()->with('error', 'Sorry unable to update the order.'. $errorMsg);
+        if (auth()->user()->company->id != $order->company->id) {
+            if ($order->status == 'accepted') {
+                $validate = ["otp"=> 'required|string|exists:orders,customer_otp'];
+                $data = ["status"=> 'in-transit'];
+                $error = $order->customer_otp != $request->otp;
+            }
+            if ($order->status == 'in-transit') {
+                $validate = ["otp"=> 'required|string|exists:orders,reciever_otp'];
+                $data = ["status"=> 'delievered'];
+                $error = $order->reciever_otp != $request->otp;
+            }
+            $request->validate($validate);
+    
+            if(!count($data) || $error) {
+                $errorMsg = $error ? 'OTP mismatch' : '';
+                return back()->with('error', 'Sorry unable to update the order.'. $errorMsg);
+            }
+
         }
         $orderRequest = $order->companyRequest;
         $sender = ["name"=>$orderRequest->customer->name, "phone"=>displayPhone($orderRequest->customer->phone)];
         $recipient = ["name"=>$orderRequest->reciever_name, "phone"=>displayPhone($orderRequest->reciever_phone)];
         $companyName = $order->company->company_name;
+        $rider = $order->rider;
         $LogisticApp = new LogisticMsgs($sender, $recipient);
         if ($order->status == 'in-transit') {
             try {
                 DB::beginTransaction();
-                $company = $order->rider->company->user->id;
-                $charges = $orderRequest->minimum_company_balance;
-                $deliveryFee = $orderRequest->amount;
-                $balance = $deliveryFee - $charges;
+                // $company = $order->rider->company->user->id;
+                // $charges = $orderRequest->minimum_company_balance;
+                // $deliveryFee = $orderRequest->amount;
+                // $balance = $deliveryFee - $charges;
                 
-                $LogisticApp->deliveryMessage($companyName);
+                $LogisticApp->deliveryMessage($companyName, $order->code);
 
-                (new TransactionService)->credit($company, $balance, "Wallet crediting for ".$order->code, auth()->id());
+                // (new TransactionService)->credit($company, $balance, "Wallet crediting for ".$order->code, auth()->id());
                 DB::commit();
             } catch (\Throwable $th) {
                 DB::rollback();
@@ -149,8 +154,11 @@ class OrderController extends Controller
             }
         }
         if ($order->status == 'accepted') {
-            $riderName = $order->rider->user->name;
-            $LogisticApp->itemPickedMessage($companyName, $riderName);
+            $riderName = $rider->riderNames()['firstName'];
+            $receiverOtp = $order->reciever_otp;
+            $amount = $orderRequest->amount;
+            $amount = $orderRequest->payment != 'sender' ? $amount : null;
+            $LogisticApp->itemPickedMessage($riderName, $order->code, $receiverOtp, $amount);
         }
         $order->update($data);
 

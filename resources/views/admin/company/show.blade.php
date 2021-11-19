@@ -44,7 +44,7 @@
         </x-base.card>
     </div>
 </div>
-@if ($company->status != 'verified')
+{{-- @if ($company->status != 'verified') --}}
     <div class="row mb-4">
         <div class="col-6">
             <form action="{{route('admin.company.accept', $company->id)}}" method="post" class="form-horizontal">
@@ -61,8 +61,8 @@
             </x-modal-button>
             <x-modal title="Rejected" key="reject" data-backdrop="static" openOnFieldError="reject_message">
                 
-                <p>Kindly State the Reason Bellow</p>
-                <form action="{{route('admin.company.accept', $company->id)}}">
+                <p>Kindly State the Reason Below</p>
+                <form action="{{route('admin.company.reject', $company->id)}}" method="post">
                     @csrf
                     <x-base.input name="reason"   /><br>
                     <button class="btn btn-primary">Submit</button>
@@ -71,6 +71,6 @@
             </x-modal>
         </div>
     </div> 
-@endif
+{{-- @endif --}}
 @endsection 
 

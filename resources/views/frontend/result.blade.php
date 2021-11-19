@@ -119,7 +119,7 @@ $allIds = [];
                                                         @csrf
 
                                                         <div class="form-row mb-4">
-                                                            <div class="col">
+                                                            <div class="col-12">
                                                                 <input readonly value="{{request()->pickup}}" required
                                                                     type="text" name="pickup" id="pickup-{{$route->id}}"
                                                                     class="form-control"
@@ -135,7 +135,7 @@ $allIds = [];
 
                                                                 @endif
                                                             </div>
-                                                            <div class="col">
+                                                            <div class="col-12 my-1">
                                                                 <input readonly value="{{request()->destination}}"
                                                                     required type="text" name="delievery"
                                                                     id="delievery-{{$route->id}}" class="form-control"
@@ -188,43 +188,58 @@ $allIds = [];
                                                             </div>
                                                         </div>
                                                         <div class="form-row mb-4">
-                                                            <div class="col">
+                                                            <div class="col col-sm-12">
                                                                 <input required type="text" name="recieverName"
                                                                     class="form-control" placeholder="Reciever Name">
                                                             </div>
-                                                            <div class="col">
-                                                                <input required type="text" name="recieverPhone"
+                                                            <div class="col col-sm-12">
+                                                                <input required type="number" name="recieverPhone"
                                                                     class="form-control" placeholder="Reciever Phone">
                                                             </div>
                                                         </div>
-                                                        <div class="form-row mb-4">
-                                                            <div class="col">
+                                                        {{-- <div class=" mb-4">
+                                                            <div>
+
                                                                 <label class="control-label">Payment By ?</label>
+                                                            </div>
+                                                            <div class="col">
                                                                 <label for="sender">
-                                                                    <input id="sender" required value="sender" checked
-                                                                        type="radio" name="payment">
+                                                                    <input id="sender" required value="sender" checked type="radio" name="payment">
                                                                     Sender
                                                                 </label>
                                                                 <label for="receiver">
-                                                                    <input id="receiver" required value="receiver"
-                                                                        type="radio" name="payment">
+                                                                    <input id="receiver" required value="receiver" type="radio" name="payment">
                                                                     Receiver
                                                                 </label>
+                                    
+                                                            </div>
+                                                        </div> --}}
+                                                        <div class="col-12 mb-4">
+                                                            <div class="d-flex">
+                                                                <label>Payment By?</label><br>
 
+                                                            </div>
+                                                            <div
+                                                                class="d-flex justify-content-between w-50 align-items-center">
+                                                                <label class="mr-2 pr-1" for="sender"><input
+                                                                        required id="sender" 
+                                                                        type="radio" name="payment" value="sender"
+                                                                        class="type" />Sender </label>
+                                                                <label for="receiver"><input id="receiver"
+                                                                        class='type' 
+                                                                        type="radio" name="payment"
+                                                                        value="receiver" />Receiver </label>
                                                             </div>
                                                         </div>
 
                                                         <div class="form-row mb-4">
-                                                            <div class="col">
-                                                                <label>Item Description</label>
-                                                                <textarea rows="7" name="description"
-                                                                    class="form-control"
-                                                                    placeholder="Item Description"></textarea>
+                                                            <div class="col col-xs-12">
+                                                                {{-- <label>Item Description</label> --}}
+                                                                <textarea rows="7" name="description"class="form-control col-sm-12" placeholder="Item Description"></textarea>
                                                             </div>
-                                                            <div class="col">
-                                                                <label>Delivery Note </label>
-                                                                <textarea rows="7" placeholder="Delievery Note"
-                                                                    class="form-control" name="note"></textarea>
+                                                            <div class="col col-sm-12">
+                                                                {{-- <label>Delivery Note </label> --}}
+                                                                <textarea rows="7" placeholder="Delievery Note" class="form-control col-sm-12" name="note"></textarea>
                                                             </div>
                                                         </div>
                                                         <div class="form-row">
@@ -241,10 +256,10 @@ $allIds = [];
                                                                     name="name" class="form-control mb-3"
                                                                     placeholder="Your Name">
                                                                 <input required value="{{request()->email}}"
-                                                                    type="email" name="email" class="form-control mb-3"
+                                                                    type="email" name="email" class="form-control col-sm-12 mb-3"
                                                                     placeholder="Email">
-                                                                <input required value="{{request()->phone}}" type="text"
-                                                                    name="phone" class="form-control"
+                                                                <input required value="{{request()->phone}}" type="number"
+                                                                    name="phone" class="form-control col-sm-12"
                                                                     placeholder="Phone Number">
                                                             </div>
                                                         </div>
@@ -295,104 +310,116 @@ $allIds = [];
     {{-- <script src="{{asset('assets/js/script.js')}}"> </script> --}}
     <script>
         $(function(){
-                const arrayOfIds = @json($allIds);
-                const long = "{{request()->lng}}";
-                const lat = "{{request()->lat}}";
-                const destination = "{{request()->destination}}";
+            const arrayOfIds = @json($allIds);
+            const long = "{{request()->lng}}";
+            const lat = "{{request()->lat}}";
+            const destination = "{{request()->destination}}";
 
-                function checkIdInDOM(id) {
-                    let element = document.getElementById(id);
-                    if (typeof (element) != 'undefined' && element != null) return true;
-                    return false;
-                }
-
-                // console.log(long, lat,destination);
-                // initGooglePlaces(arrayOfIds);
-                let cal = calculateDistance2(lat, long, destination).then(res=>{
-                    calculatedDist = res.rows[0].elements[0].distance.text;
-                    arrayOfIds.forEach((id) => {
-                        // console.log(id);å
-                        if (checkIdInDOM(id)) {
-                            let formId = id.split('-')[1];
-                            console.log('form',formId);
-                            document.querySelector(`#request-form-${formId} #distance`).value = calculatedDist;
-                        }
-                    })
-                });
-                // console.log(cal);
-            })
-            function calculateDistance2(lat, lng, destination) {
-                let origin = new google.maps.LatLng(lat, lng);
-                let service = new google.maps.DistanceMatrixService();
-
-                console.log('origin:',origin);
-                const test = service.getDistanceMatrix(
-                    {
-                    origins: [origin],
-                    destinations: [destination],
-                    travelMode: google.maps.TravelMode.DRIVING,
-                    avoidHighways: false,
-                    avoidTolls: false
-                    },
-                );
-                return test;
+            function checkIdInDOM(id) {
+                let element = document.getElementById(id);
+                if (typeof (element) != 'undefined' && element != null) return true;
+                return false;
             }
 
-            $('.type').change(function () {
-                let type = $(this).val();
-                let id = $(this).attr('rel');
-                // alert(id)
-                handleAmountDisplay(type, id)
+            // console.log(long, lat,destination);
+            // initGooglePlaces(arrayOfIds);
+            let cal = calculateDistance2(lat, long, destination).then(res=>{
+                calculatedDist = res.rows[0].elements[0].distance.text;
+                arrayOfIds.forEach((id) => {
+                    // console.log(id);å
+                    if (checkIdInDOM(id)) {
+                        let formId = id.split('-')[1];
+                        console.log('form',formId);
+                        document.querySelector(`#request-form-${formId} #distance`).value = calculatedDist;
+                    }
+                })
+            });
+            // console.log(cal);
+        })
+        function calculateDistance2(lat, lng, destination) {
+            let origin = new google.maps.LatLng(lat, lng);
+            let service = new google.maps.DistanceMatrixService();
 
-            })
-            function handleAmountDisplay(type, id) {
-                // let distance = $(`#request-form-${id} #distance`).val();
-                let distance = document.querySelector(`#request-form-${id} #distance`).value;
-                distance = distance.split(' ')[0];
-                distance = parseFloat(distance);
-                // alert(distance)
-                if (distance) {
-                let amount = expressDelievery(distance);
-                // alert(amount[type])
+            console.log('origin:',origin);
+            const test = service.getDistanceMatrix(
+                {
+                origins: [origin],
+                destinations: [destination],
+                travelMode: google.maps.TravelMode.DRIVING,
+                avoidHighways: false,
+                avoidTolls: false
+                },
+            );
+            return test;
+        }
+
+        $('.type').change(function () {
+            let type = $(this).val();
+            let id = $(this).attr('rel');
+            // alert(id)
+            handleAmountDisplay(type, id)
+
+        })
+        function handleAmountDisplay(type, id) {
+            // let distance = $(`#request-form-${id} #distance`).val();
+            let distance = document.querySelector(`#request-form-${id} #distance`).value;
+            distance = distance.split(' ')[0];
+            distance = parseFloat(distance);
+            // alert(distance)
+            if (distance) {
+                let idSelected = `#request-form-${id} #amount`;
                 $(`#request-form-${id} #amountCont`).show();
-                $(`#request-form-${id} #amount`).show().val(amount[type]);
+                expressDelievery(distance, type, idSelected);
+                // $(`#request-form-${id} #amount`).show().val(amount);
 
-                }
             }
+        }
 
-            function expressDelievery(distance) {
+        function expressDelievery(distance, type, id) {
+            const _token = "{{csrf_token()}}";
+            return $.ajax({
+                url:"{{route('generate.price')}}",
+                type: 'POST',
+                data:{distance, type, _token},
+                success: function (data){
+                    let amount = data?.payload;
+                    $(id).show().val(amount);
+                }
+            })
 
-                if (distance < 10) {
+            return;
+
+            if (distance < 10) {
                 return {
                     regular: 1000,
                     express: 2000
                 }
-                }
-                if (distance < 20) {
+            }
+            if (distance < 20) {
                 return {
                     regular: 1500,
                     express: 2500
                 }
-                }
-                if (distance < 30) {
+            }
+            if (distance < 30) {
                 return {
                     regular: 2000,
                     express: 3500
                 }
-                }
-                if (distance < 40) {
+            }
+            if (distance < 40) {
                 return {
                     regular: 2500,
                     express: 4500
                 }
-                }
-                if (distance > 40) {
+            }
+            if (distance > 40) {
                 return {
                     regular: 3000,
                     express: 5500
                 }
-                }
             }
+        }
     </script>
 
     {{-- <script type="text/javascript">

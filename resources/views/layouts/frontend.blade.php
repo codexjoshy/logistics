@@ -82,10 +82,10 @@
           <div class="text-right top-bar">
             <!-- Topbar Social Icons Start -->
             <div class="top-bar-btn d-inline-flex social-icons">
-              <a href="https://www.facebook.com/profile.php?id=100072326775033"><i class="icofont-facebook"></i></a>
+              <a target="_blank" href="https://m.facebook.com/booklogistic-202950091754381/"><i class="icofont-facebook"></i></a>
               {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
-              <a href="#"><i class="icofont-whatsapp"></i></a>
-              <a href="#"><i class="icofont-google-plus"></i></a>
+              <a target="_blank" href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
+              <a target="_blank" href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>
             </div>
             <!-- Topbar Social Icons End -->
 
@@ -263,7 +263,7 @@
             <a href="https://www.facebook.com/profile.php?id=100072326775033"><i class="icofont-facebook"></i></a>
             {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
             <a href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
-            <a href="mailto:info@booklogistic.com"><i class="icofont-google-plus"></i></a>
+            <a href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>
             <a href="https://www.instagram.com/invites/contact/?i=827jpvt7cs7g&utm_content=mjo8noc">
               <i class="icofont-instagram"></i></a>
           </div>

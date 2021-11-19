@@ -7,6 +7,7 @@ use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PlaceRequestController;
+use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RiderController;
@@ -72,7 +73,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('admin/company/register', [CompanyController::class, 'index'])->name('admin.company.index');
         Route::get('admin/company/{company}', [CompanyController::class, 'show'])->name('admin.company.show');
         Route::post('admin/company/{company}/accept', [CompanyController::class, 'accept'])->name('admin.company.accept');
-        // Route::get('admin/company/pending', [CompanyController::class, 'pending'])->name('admin.company.register');
+        Route::post('admin/company/{company}/reject', [CompanyController::class, 'reject'])->name('admin.company.reject');
+        Route::get('admin/price/create', [PriceController::class, 'create'])->name('admin.option.price');
+        Route::post('admin/price/store', [PriceController::class, 'store'])->name('admin.option.price.store');
     });
 
 });
@@ -91,13 +94,14 @@ Route::view('terms-and-condition','frontend.terms')->name('terms.condition');
 Route::get('result', [FrontendController::class, 'result'])->name('frontend.result');
 Route::get('contact', [FrontendController::class, 'contact'])->name('frontend.contact'); 
 Route::post('contact', [FrontendController::class, 'contactProcess'])->name('frontend.contact.process');
-Route::get('request/company', [FrontendController::class, 'requestCompany'])->name('frontend.request.company');
+Route::get('operator/{name}', [FrontendController::class, 'requestCompany'])->name('frontend.request.company');
 Route::post('request/route/{route}', [PlaceRequestController::class, 'store'])->name('make.request');
 Route::post('request/', [PlaceRequestController::class, 'sendRequest'])->name('send.request');
 
 Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
 Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
 Route::post('api/order/check/order/otp', [AjaxController::class, 'checkOrderOtp'])->name('check.order.otp');
+Route::post('api/generate/price', [AjaxController::class, 'getPriceByDistance'])->name('generate.price');
 
 
 

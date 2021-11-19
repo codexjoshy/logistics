@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCompanyProfileRequest;
 use App\Http\Requests\UpdateCompanyProfileRequest;
 use App\Models\Company;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class CompanyController extends Controller
@@ -50,26 +52,39 @@ class CompanyController extends Controller
      */
     public function store(StoreCompanyProfileRequest $request)
     {
-        ["company_name"=>$companyName, "company_email"=>$companyEmail, 
-            "company_phone"=>$companyPhone, "rc_no"=>$rcNo]= $request->validated();
-        $companyData = [
-            "company_name"=>$companyName,
-            "company_email"=>$companyEmail,
-            "company_phone"=>$companyPhone,
-            "rc_no"=>$rcNo,
-            "user_id"=>auth()->id(),
-            "status"=> 'pending'
-        ];
-        if($request->cac){
-            $path = $request->cac->store('cac', 'public');
-            $companyData['cac'] = $path;
-        }
-        if($request->logo){
-            $path = $request->logo->store('companyLogo', 'public');
-            $companyData['logo'] = $path;
+        try {
+            ["company_name"=>$companyName, "company_email"=>$companyEmail, 
+            "company_phone"=>$companyPhone, "rc_no"=>$rcNo, "username"=>$username, "address"=>$address,
+            "state"=>$state,
+            "lga"=>$lga]= $request->validated();
+            $companyData = [
+                "company_name"=>$companyName,
+                "company_email"=>$companyEmail,
+                "company_phone"=>$companyPhone,
+                "rc_no"=>$rcNo,
+                "user_id"=>auth()->id(),
+                "status"=> 'pending',
+                "username"=> $username,
+                "address"=>$address,
+                "state"=>$state,
+                "lga"=>$lga
+            ];
+            if($request->cac){
+                $path = $request->cac->store('cac', 'public');
+                $companyData['cac'] = $path;
+            }
+            if($request->logo){
+                $path = $request->logo->store('companyLogo', 'public');
+                $companyData['logo'] = $path;
+            }
+            DB::beginTransaction();
+            Company::create($companyData);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return back()->with('error', "Sorry there seem to be a problem with your application, contact support with:".$th->getMessage());
         }
         
-        Company::create($companyData);
         return back()->with('success', 'Company Profile Updated Successfully');
     }
 
@@ -93,7 +108,28 @@ class CompanyController extends Controller
     public function accept(Company $company)
     {
         $this->authorize('admin');
-        $company->update(['status'=>'verified']);
+        try {
+            DB::beginTransaction();
+            (new TransactionService)->credit($company->user->id, 500, 'Registration Bonus From Book Logistic', 1);
+            $company->update(['status'=>'verified']);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return back()->with('error', 'Sorry unable to approve company. kindly contact support with: '. $th->getMessage());
+        }
+        
+        return redirect()->route('admin.company.pending')->with('success', 'Company Approved Successfully, with a bonus credit of 500');
+    }
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Company  $Company
+     * @return \Illuminate\Http\Response
+     */
+    public function reject(Request $request, Company $company)
+    {
+        $this->authorize('admin');
+        $company->update(['status'=>'review', 'reason'=> $request->reason]);
         return redirect()->route('admin.company.pending');
     }
 
@@ -107,25 +143,31 @@ class CompanyController extends Controller
     public function update(UpdateCompanyProfileRequest $request, Company $company)
     {
         [ "company_email"=>$companyEmail, 
-            "company_phone"=>$companyPhone]= $request->validated();
+            "company_phone"=>$companyPhone, "username"=>$username, "address"=>$address,
+            "state"=>$state,
+            "lga"=>$lga,]= $request->validated();
         $companyData = [
             "company_email"=>$companyEmail,
             "company_phone"=>$companyPhone,
+            "username"=>$username,
+            "address"=>$address,
+            "state"=>$state,
+            "lga"=>$lga,
         ];
         if (Gate::allows('admin') && $company->status == 'verified') {
-            $companyData[]= ["company_name"=>$request->company_name, "rc_no"=>$request->rc_no];
+            $companyData["company_name"] = $request->company_name;
+            $companyData["rc_no"]=$request->rc_no;
             if($request->cac && $company->status != 'verified'){
                 $path = $request->cac->store('cac', 'public');
                 $companyData['cac'] = $path;
             }
-
         }
         if ( $company->status != 'verified') {
             if($request->cac ){
                 $path = $request->cac->store('cac', 'public');
                 $companyData['cac'] = $path;
             }
-            $companyData[] = ["rc_no"=>$request->rc_no];
+            $companyData["rc_no"]=$request->rc_no;
         }
         if($request->logo){ 
             $path = $request->logo->store('companyLogo', 'public');

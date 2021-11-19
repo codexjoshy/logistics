@@ -115,7 +115,7 @@ $(function () {
     distance = parseFloat(distance);
     // alert(distance)
     if (distance) {
-      let amount = expressDelievery(distance);
+      let amount = expressDelievery(distance, type);
       // alert(amount[type])
       $(`#request-form-${id} #amountCont`).show();
       $(`#request-form-${id} #amount`).show().val(amount[type]);
@@ -123,36 +123,40 @@ $(function () {
     }
   }
 })
-function expressDelievery(distance) {
+// function expressDelievery(distance, type) {
 
-  if (distance < 10) {
-    return {
-      regular: 1000,
-      express: 2000
-    }
-  }
-  if (distance < 20) {
-    return {
-      regular: 1500,
-      express: 2500
-    }
-  }
-  if (distance < 30) {
-    return {
-      regular: 2000,
-      express: 3500
-    }
-  }
-  if (distance < 40) {
-    return {
-      regular: 2500,
-      express: 4500
-    }
-  }
-  if (distance > 40) {
-    return {
-      regular: 3000,
-      express: 5500
-    }
-  }
-}
+//   $.ajax({
+
+//   })
+
+//   if (distance < 10) {
+//     return {
+//       regular: 1000,
+//       express: 2000
+//     }
+//   }
+//   if (distance < 20) {
+//     return {
+//       regular: 1500,
+//       express: 2500
+//     }
+//   }
+//   if (distance < 30) {
+//     return {
+//       regular: 2000,
+//       express: 3500
+//     }
+//   }
+//   if (distance < 40) {
+//     return {
+//       regular: 2500,
+//       express: 4500
+//     }
+//   }
+//   if (distance > 40) {
+//     return {
+//       regular: 3000,
+//       express: 5500
+//     }
+//   }
+// }

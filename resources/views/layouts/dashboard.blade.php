@@ -55,6 +55,20 @@
                         {{ session('error') }}
                     </x-base.alert>
                     @endif
+                    @if (auth()->user()->company)
+                        @if (!auth()->user()->company->username)
+                        <x-base.alert type="danger" title="Username Error" icon="fa-times">
+                            <strong>Hello {{auth()->user()->company->company_name}} kindly update your username in order to be able to share your company url</strong>
+                            <br> Click the button to update your username <a href="{{route('company.profile.create')}}" class="btn btn-primary btn-sm">Update Username</a>
+                        </x-base.alert>
+                        @endif
+                        @if (!auth()->user()->company->state || !auth()->user()->company->address || !auth()->user()->company->lga  )
+                        <x-base.alert type="danger" title="Company Location Error" icon="fa-times">
+                            <strong>Hello {{auth()->user()->company->company_name}} kindly update your Address information in order for your account to be properly verified</strong>
+                            <br> Click the button to update <a href="{{route('company.profile.create')}}" class="btn btn-primary btn-sm">Update Company Location</a>
+                        </x-base.alert>
+                        @endif
+                    @endif
 
                     @yield('content')
                 </div>

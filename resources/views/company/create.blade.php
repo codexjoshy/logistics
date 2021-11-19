@@ -10,7 +10,7 @@
                     Review
                 </x-modal-button>
                 <x-modal title="Review" key="review" data-backdrop="static" openOnFieldError="review_message">
-                    
+                    <p>{{optional($user->company)->reason}}</p>
                 </x-modal>
                 @endif
                 <small>Account Status: <strong>{{optional($user->company)->status ?? ''}}</strong></small>
@@ -32,18 +32,65 @@
                     <x-base.form-group label="Company Slogan" required class="col-md-12">
                         <x-base.input  :value="old('slogan')?? optional($user->company)->slogan" required id="slogan" name="slogan" type="text" />
                     </x-base.form-group>
+                    <x-base.form-group label="Username for unique url" required class="col-md-12">
+                        <small><strong>This username would be unique to you for you customers.</strong> <small class='text-warning'> note:Avoid spaces within the name</small></small>
+                        <x-base.input  :value="old('username')?? optional($user->company)->username" required id="username" name="username" type="text" />
+                    </x-base.form-group>
+                    <x-base.form-group label="Office Address" required class="col-md-12">
+                        <small><strong><small class="text-warning">This is important for your validity and acceptance to use this platform</small></strong> </small>
+                        <x-base.input  :value="old('address')?? optional($user->company)->address" required id="address" name="address" type="text" />
+                    </x-base.form-group>
+                    <x-base.form-group label="State" required class="col-6">
+                        <select id="state" class="form-control js-example-templating"
+                        value="{{ old('state')?? optional($user->company)->state ??'' }}"
+                        name="state">
+                        <option value="">---------</option>
+                        @forelse (states() as $state)
+                        <option
+                            {{ optional($user->company)->state == strtolower($state) ? 'selected': '' }}
+                            value="{{ strtolower($state) }}">{{ $state }}</option>
+                        @empty
+
+                        @endforelse
+                    </select>
+                    @error('state')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                    </x-base.form-group>
+                    <x-base.form-group label="Local GOVT." required class="col-6">
+                        <select id="lga" class="form-control js-example-templating"
+                            value="{{ old('lga')?? optional($user->company)->lga ??'' }}"
+                            name="lga">
+                            <option value="">-----select state----</option>
+                        </select>
+                        @error('lga')
+                    <span class="invalid-feedback" role="alert">
+                        <strong>{{ $message }}</strong>
+                    </span>
+                    @enderror
+                    </x-base.form-group>
                     @if ($verified)
                     <div class="form-group">
                         <a target="_blank" href="{{Storage::url(optional($user->company)->cac)}}">View Uploaded CAC</a>
                     </div>
                     @else
-                    <small class="text-success">Providing your CAC document enables your company to be verified by our platform</small>
+                    <small class="text-success">Providing your CAC document enables your company to be verified by our platform</small><br/>
                     <x-base.form-group label="Upload CAC"  class="col-md-12">
+                        <small class="text-warning">Required File types: png,jpg,jpeg,pdf. file must not be more than 1mb</small>
                         <x-base.input :value="old('cac')"  id="cac" name="cac" type="file" />
                     </x-base.form-group>
                     @endif
-                   
+                    @if (!$verified && $user->company && $user->company->cac)
+                        <div class="my-4">
+                            <a target="_blank" href="{{Storage::url(optional($user->company)->cac)}}">View Uploaded CAC</a>
+                        </div>
+                        
+                    @endif
+
                     <x-base.form-group label="Company Logo"  class="col-md-12">
+                        <small class="text-warning">Required File types: png,jpg,jpeg. file must not be more than 1mb</small>
                         <x-base.input :value="old('logo')"  id="logo" name="logo" type="file" />
                     </x-base.form-group>
                     @if ($user->company && $user->company->logo)
@@ -63,5 +110,6 @@
         </x-base.card>
     </div>
 </div>
+@include('partials.state-lga-script')
 @endsection 
 

@@ -32,7 +32,11 @@ class UpdateCompanyProfileRequest extends FormRequest
             "company_email"=> 'required|string|unique:companies,company_email,'. $this->company->id,
             "company_phone" => 'required|numeric|unique:companies,company_phone,'. $this->company->id,
             "rc_no"=> 'sometimes|string|unique:companies,rc_no,'. $this->company->id,
-            "cac" => 'nullable|file|mimes:png,jpg,pdf,jpeg|size:100'
+            "cac" => 'nullable|file|mimes:png,jpg,pdf,jpeg|size:100',
+            "username"=> 'required|string|unique:companies,username,'. $this->company->id,
+            "address"=> 'required|string',
+            "state"=> 'required|string',
+            "lga"=> 'required|string'
         ];
     }
 }
