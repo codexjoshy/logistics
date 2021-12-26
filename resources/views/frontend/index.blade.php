@@ -191,7 +191,7 @@
         <div id="error"></div>
         <form class="form-inline tracking">
           <input id="order" name="order" type="text" class="form-control mb-2 mr-sm-2 col"
-            placeholder="Enter order number e.g order-38c56o43">
+            placeholder="Enter order number e.g 38c56o43">
           <input id="otp" name="otp" type="text" class="form-control mb-2 mr-sm-2 col" placeholder="Enter OTP">
           <button type="button" id="findOrder" class="btn btn-theme bg-navy-blue mb-2 ml-3">Check Now <i
               class="icofont-rounded-right"></i></button>
@@ -269,13 +269,17 @@
                 }else{
                   const {name, orderDate, status, company, sender, recipient} = data?.payload;
                   // console.log(data);
+                  let statusMessage = status;
+                  if(status == 'accepted'){
+                    statusMessage = "Ready For Pickup";
+                  }
                   $('#response').html(`<div class="alert alert-success">
                     <div class='row'>
                       <div class="col">
                         <h3>Hello ${name}</h3>
                         <p>Find Below Order Details</p>
                         <p><strong>Date Ordered: ${orderDate}</strong></p>
-                        <p><strong>Order Status: ${status}</strong></p>
+                        <p><strong>Order Status: <strong>${statusMessage}</strong> </strong></p>
                         <p><strong>Company: ${company}</strong></p>
                         <p><strong>Sender: ${sender}</strong></p>
                         <p><strong>Recipient: ${recipient}</strong></p>

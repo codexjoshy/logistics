@@ -65,7 +65,12 @@ class FrontendController extends Controller
             "name"=>'required|string',
             "message"=>'required|string'
         ]);
-        Notification::send(new ContactUsNotification($request->email, $request->phone, $request->message));
+        try {
+            Notification::send(new ContactUsNotification($request->email, $request->phone, $request->message, $request->name));
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Sorry we were unable to send a message at this time '. $th->getMessage());
+        }
+       
         return back()->with('success', 'Thank you for contacting us. We will contact you with details provided');
     }
     public function requestCompany(Request $request, string $name)

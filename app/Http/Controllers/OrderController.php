@@ -110,10 +110,13 @@ class OrderController extends Controller
     {
         $data = [];
         $error = false;
+        
 
         if (auth()->user()->company->id != $order->company->id) {
             if ($order->status == 'accepted') {
-                $validate = ["otp"=> 'required|string|exists:orders,customer_otp'];
+                $validate = [
+                    "otp"=> 'required|string|exists:orders,customer_otp',
+                ];
                 $data = ["status"=> 'in-transit'];
                 $error = $order->customer_otp != $request->otp;
             }

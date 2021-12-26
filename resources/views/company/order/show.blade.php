@@ -28,6 +28,7 @@
                         <x-base.input disabled required :value="$customer->email" name="rider_email" />
                     </x-base.form-group>
                     <x-base.form-group label="Customer Phone Number" required class="col-md-4">
+                        <a href="tel:{{$customer->phone}}" class="fa fa-phone"> Call</a>
                         <x-base.input disabled required :value="$customer->phone" name="rider_phone" />
                     </x-base.form-group>
                     <x-base.form-group label="Pickup Address" required class="col-md-12">
@@ -64,6 +65,7 @@
                     </x-base.form-group>
                     
                     <x-base.form-group label="Reciever Phone Number" required class="col-md-4">
+                        <a href="tel:{{$placeRequest->reciever_phone}}" class="fa fa-phone"> Call</a>
                         <x-base.input disabled required :value="$placeRequest->reciever_phone" name="rider_phone" />
                     </x-base.form-group>
                     <x-base.form-group label="Customer OTP" required class="col-md-4">
@@ -72,6 +74,9 @@
                     <x-base.form-group label="Reciever OTP" required class="col-md-4">
                         <x-base.input disabled required :value="optional($placeRequest->order)->reciever_otp" name="rider_phone" />
                     </x-base.form-group>
+                    {{-- <x-base.form-group label="Call Customer" required class="col-md-4">
+                    </x-base.form-group> --}}
+                    
                 </div>
         </x-base.card>
     </div>
@@ -90,6 +95,7 @@
                         <x-base.input disabled required :value="$rider->user->name" name="rider_name"/>
                     </x-base.form-group>
                     <x-base.form-group label="Rider Phone" required class="col-md-4">
+                        <a href="tel:{{$rider->user->phone}}" class="fa fa-phone"> Call</a>
                         <x-base.input disabled required :value="$rider->user->phone" name="rider_phone"/> 
                     </x-base.form-group>
                     <x-base.form-group label="Rider Unique Identification" required class="col-md-4">

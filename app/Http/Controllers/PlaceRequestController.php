@@ -79,12 +79,12 @@ class PlaceRequestController extends Controller
             ]);
 
             $customerOtp = $this->orderService->otpGenerator();
-            $receiverOtp = $this->orderService->otpGenerator();
+            $receiverOtp = $this->orderService->otpGenerator(); 
             $rider = Rider::findOrFail($request->rider);
-            $order->update(['customer_otp'=> $customerOtp,'reciever_otp'=>$receiverOtp]);
+            $order->update(['customer_otp'=> strtolower($customerOtp),'reciever_otp'=> strtolower($receiverOtp)]);
 
             $riderPhone = $rider->user->phone;
-            $company = $rider->company->name;
+            $companyName = $rider->company->company_name;
             $pickup = $placeRequest->pickup_address;
             $destination = $placeRequest->delievery_address;
  
@@ -104,27 +104,17 @@ class PlaceRequestController extends Controller
             }
             
             $type = $placeRequest->type;
-
-
-            $SendSms = new LogisticMsgs($senderInfo, $recipient, $riderInfo, $company);
+            $SendSms = new LogisticMsgs($senderInfo, $recipient, $riderInfo, $companyName);
             //to riders 
-            $toRider = $SendSms->sendOTP('rider', '0', $amount, $pickupInfo, $destinationInfo, $order->code, $type);
-            // if ($toRider['error']) {
-            //     throw new Exception($toRider['error']);
-            // }
-            $toReci = $SendSms->sendOTP('receiver', $receiverOtp, $placeRequest->payment != 'sender' ? $amount : null, $pickupInfo, $destinationInfo,  $order->code, $type);
-            // if ($toReci['error']) {
-            //     throw new Exception($toReci['error']);
-            // }
-            
-            $toSender = $SendSms->sendOTP('sender', $customerOtp, $placeRequest->payment == 'sender' ? $amount : null, $pickupInfo, $destinationInfo, $order->code, $type);
-            // if ($toSender['error']) {
-            //     throw new Exception($toSender['error']);
-            // }           
+            $SendSms->sendOTP('rider', '0', $amount, $pickupInfo, $destinationInfo, $order->code, $type);
 
+            $SendSms->sendOTP('receiver', $receiverOtp, $placeRequest->payment != 'sender' ? $amount : null, $pickupInfo, $destinationInfo,  $order->code, $type);
+            
+            $SendSms->sendOTP('sender', $customerOtp, $placeRequest->payment == 'sender' ? $amount : null, $pickupInfo, $destinationInfo, $order->code, $type);
+               
+            //debit company for accepting
             (new TransactionService)->debit($user->id, $requestAmount, "Debit for Order {$order->code}");
             DB::commit();
-            //debit company for accepting
             $riderMsg = "Dear rider, you have been assigned to pick an order for delivery. Click the link below to view details";
             $rider->user->notify(new RequestAcceptedNotification($riderMsg, '/dashboard'));
             $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. You can use the order id  and otp to track your delivery request. Order ID : order-{$order->code} OTP code:$customerOtp. booklogistic.com/#track";
@@ -233,18 +223,17 @@ class PlaceRequestController extends Controller
             ]);
             
             if ($request->companyId) {
-                //TODO send mail
-                // $order = Order::create([
-                //     "request_id" => $placeRequest->id,
-                //     "company_id"=> $request->companyId,
-                //     "status"=> 'pending'
-                // ]);
                 $placeRequest->update(['company_id' => $request->companyId]);
                 $company = Company::find($request->companyId);
                 $user = $company->user;
+                // send mail to company
                 $user->notify(new OrderRequestedNotification);
+                // send sms to company
+                $senderInfo = ["name"=> $user->name, "phone"=> displayPhone($user->phone)];
+                $recipient = ["name"=> $recieverName, "phone"=> displayPhone($recieverPhone)];
+                $SendSms = new LogisticMsgs($senderInfo, $recipient);
+                $SendSms->companyBooked($company->company_phone);
             }
-
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();

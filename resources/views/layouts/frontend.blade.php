@@ -260,7 +260,7 @@
           
           <h3 class="footer-heading">We're Social</h3>
           <div class="social-icons">
-            <a href="https://www.facebook.com/profile.php?id=100072326775033"><i class="icofont-facebook"></i></a>
+            <a href="https://m.facebook.com/booklogistic-202950091754381/"><i class="icofont-facebook"></i></a>
             {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
             <a href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
             <a href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>

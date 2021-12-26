@@ -23,13 +23,13 @@
               <i class="icofont-phone"></i> <span><a href="tel:+2348175009200">+234 (0) 817 500 9200</a> </span>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-              <i class="icofont-email"></i> <a href="mailto:info@booklogistic.com">info@booklogistic.com</a>
+              <i class="icofont-email"></i> <a target="_blank"href="mailto:support@booklogistic.com">support@booklogistic.com</a>
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-whatsapp"></i> <a href="tel:+2348175009200">+234 (0) 817 500 9200</a> 
+                <i class="icofont-whatsapp"></i> <a target="_blank" href="https://wa.me/message/WBXVFFUUUMIZJ1">+234 (0) 817 500 9200</a> 
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-facebook"></i><a href="https://www.facebook.com/profile.php?id=100072326775033">booklogistic</a> 
+                <i class="icofont-facebook"></i><a target="_blank" href="https://m.facebook.com/booklogistic-202950091754381/">booklogistic</a> 
             </div>
           </div>
           <!-- Contact Detail Left -->

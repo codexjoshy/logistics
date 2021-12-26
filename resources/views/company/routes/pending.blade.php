@@ -33,6 +33,9 @@
                         <x-base.input disabled required :value="$canView? $placeRequest->customer->email : '' " name="rider_email" />
                     </x-base.form-group>
                     <x-base.form-group label="Customer Phone Number" required class="col-md-4">
+                        @if ($canView)
+                        <a href="tel:{{$placeRequest->customer->phone}}" class="fa fa-phone">Call</a>
+                        @endif
                         <x-base.input disabled required :value="$canView? $placeRequest->customer->phone : '' " name="rider_phone" />
                     </x-base.form-group>
                     <x-base.form-group label="Pickup Address" required class="col-md-12">
@@ -53,6 +56,9 @@
                     </x-base.form-group>
                     
                     <x-base.form-group label="Reciever Phone Number" required class="col-md-4">
+                        @if ($canView)
+                        <a href="tel:{{$placeRequest->reciever_phone}}" class="fa fa-phone">Call</a>
+                        @endif
                         <x-base.input disabled required :value="$canView ? $placeRequest->reciever_phone : '' " name="rider_phone" />
                     </x-base.form-group>
                     <x-base.form-group label="Distance" required class="col-md-4">

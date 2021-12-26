@@ -51,12 +51,12 @@ class LogisticMsgs extends Messenger {
         }
         if ($person == 'sender') {
             $showAmt = $amount ? "Amount: $amount" : '';            
-            $message = "Dear Customer,  {$this->rider['name']}({$this->rider['phone']}) has been assigned to pick your item for delivery.#order-$order. Your code:$otp. $showAmt  booklogistic.com/#track";
+            $message = " Your item for $receiverName has been assigned to {$this->rider['name']}({$this->rider['phone']}) for pickup. #order-$order. code:$otp. $showAmt . booklogistic.com/#track";
             $to = $senderPhone;
         }
         if ($person == 'receiver') {
             $showAmt = $amount ? "Amount: $amount" : '';            
-            $message = "Hi $receiverName,  {$this->rider['name']}({$this->rider['phone']}) has been assigned to pick your item for delivery.#order-$order Your code:$otp. $showAmt booklogistic.com/#track";
+            $message = "Dear $receiverName, your item from $senderName has been assigned for pickup. $showAmt #order-$order. Code:$otp. booklogistic.com/#track.com";
             $to = $receiverPhone;
         }
         $this->sendSMS($to, $message);
@@ -69,13 +69,13 @@ class LogisticMsgs extends Messenger {
      */
     public function deliveryMessage(string $companyName, string $order) 
     {
-      $message = "Hi {$this->sender['name']}, your item of order #order-$order has been successfully delivered to {$this->recipient['name']}. Thanks for your patronage, {$companyName} Feel free to contact us on how to serve you better. booklogistic.com/contact";
+      $message = "#order-$order has been successfully delivered. Thanks for your patronage. Feel free to contact us on how to serve you better. booklogistic.com/contact";
       return $this->sendSMS($this->sender['phone'], $message);
     }
     /**
      * send delivery  Message to the sender
      *
-     * @return array ["status"=> <status>, "error"=><>]
+     @return array ["status"=> <status>, "error"=><>]
      */
     // public function itemPickedMessage(string $companyName, string $riderName, string $order) 
     // {
@@ -96,8 +96,15 @@ class LogisticMsgs extends Messenger {
         $showAmt = $amount ? "Amount: $amount" : '';  
         $sender = $this->sender;
         $senderName = $sender['name'];
-        $message = "Hi $receiverName, an item has been requested to be delivered to you by $riderName from $senderName. Order ID : #order-$order . Code: $otp . $showAmt  booklogistic.com/#track";
+        $message = "#order-$order  Code:$otp is in transit by {$riderName}. $showAmt booklogistic.com/#track";
+
         return $this->sendSMS($receiverPhone, $message);
+    }
+
+    public function companyBooked($companyPhone)
+    {
+        $message = "Dear Operator, You have a new delivery request on BookLogistic App. Click the link to view details.https://booklogistic.com/company/daily/request";
+        return $this->sendSMS($companyPhone, $message);
     }
 }
     

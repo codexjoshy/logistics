@@ -23,6 +23,7 @@ class OrderService {
         // $otp = $generator->generate();
         // $otp = $this->checkDB($otp);
         $otp = Str::random(4);
+        $otp = strtolower($otp);
         return $otp;
 
     }

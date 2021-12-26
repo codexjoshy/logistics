@@ -18,11 +18,12 @@ class ContactUsNotification extends Notification
      *
      * @return void
      */
-    public function __construct(String $email, String $phone, String $message)
+    public function __construct(String $email, String $phone, String $message, String $name)
     {
         $this->email = $email;
         $this->phone = $phone;
         $this->message = $message;
+        $this->name = $name;
     }
 
     /**

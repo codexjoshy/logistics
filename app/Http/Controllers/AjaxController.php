@@ -69,14 +69,14 @@ class AjaxController extends Controller {
     {
 
         $orderId = explode("-", $order);
-        if (count($orderId) <= 1) {
-            $error = ["status"=>false, "message"=>"INVALID ORDER CODE SUPPLIED 1", "code"=>401];
-            return $error;
-        }
-        if ($orderId[0] != 'order') {
-            $error = ["status"=>false, "message"=>"INVALID ORDER CODE SUPPLIED", "code"=>401];
-            return $error;
-        }
+        // if (count($orderId) <= 1) {
+        //     $error = ["status"=>false, "message"=>"INVALID ORDER CODE SUPPLIED 1", "code"=>401];
+        //     return $error;
+        // }
+        // if ($orderId[0] != 'order') {
+        //     $error = ["status"=>false, "message"=>"INVALID ORDER CODE SUPPLIED", "code"=>401];
+        //     return $error;
+        // }
         $orderId = end($orderId);
         $orderId = explode('c',$orderId);
         if (count($orderId) != 2) {
@@ -96,7 +96,7 @@ class AjaxController extends Controller {
         $orderId = $orderId[0];
         $orderInfo = Order::with('companyRequest')->whereKey($orderId)->first();
         if (!$orderInfo) {
-            $error = ["status"=>false, "message"=>"COULDN'T FIND ORDER WITH", "code"=>403];
+            $error = ["status"=>false, "message"=>"COULDN'T FIND ORDER WITH $order", "code"=>403];
             return $error;
         }
         return ["status"=>true, "message"=> $orderInfo];

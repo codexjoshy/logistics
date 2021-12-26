@@ -77,7 +77,7 @@
                     </div>
                     @else
                     <small class="text-success">Providing your CAC document enables your company to be verified by our platform</small><br/>
-                    <x-base.form-group label="Upload CAC"  class="col-md-12">
+                    <x-base.form-group label="Upload CAC or a valid government approved logistics document"  class="col-md-12">
                         <small class="text-warning">Required File types: png,jpg,jpeg,pdf. file must not be more than 1mb</small>
                         <x-base.input :value="old('cac')"  id="cac" name="cac" type="file" />
                     </x-base.form-group>
