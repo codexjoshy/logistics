@@ -171,11 +171,11 @@ $allIds = [];
                                                                     <label class="mr-2 pr-1" for="regular"><input
                                                                             required id="regular" rel='{{$route->id}}'
                                                                             type="radio" name="type" value="regular"
-                                                                            class="type" />Regular </label>
+                                                                            class="type" />Regular (sameday delivery) </label>
                                                                     <label for="express"><input id="express"
                                                                             class='type' rel='{{$route->id}}'
                                                                             type="radio" name="type"
-                                                                            value="express" />Express </label>
+                                                                            value="express" />Express (instant delivery) </label>
                                                                 </div>
                                                             </div>
 
@@ -245,8 +245,7 @@ $allIds = [];
                                                         <div class="form-row">
                                                             <div class="col">
                                                                 <div class="center-head">
-                                                                    <p class="bg-light-gray txt-orange">Your Personal
-                                                                        Details</p>
+                                                                    <p class="bg-light-gray txt-orange">Sender Details</p>
                                                                 </div>
                                                             </div>
                                                         </div>

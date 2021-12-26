@@ -401,10 +401,10 @@
                           <div class="d-flex justify-content-between w-50 align-items-center">
                             <label for="regular" class="mr-2 pr-1">
                               <input required id="regular" rel="0"  type="radio" name="type"
-                                value="regular" class='type' />Regular </label>
+                                value="regular" class='type' />Regular (sameday delivery) </label>
 
                             <label for="express">
-                              <input id="express" rel='0' type="radio" class='type' name="type" value="express" />Express
+                              <input id="express" rel='0' type="radio" class='type' name="type" value="express" />Express (instant delivery)
                             </label>
 
                           </div>

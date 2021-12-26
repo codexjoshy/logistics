@@ -100,17 +100,17 @@
           <form action="{{route('frontend.result')}}" method="get" novalidate="novalidate" class="col rounded-field">
             @csrf
             <div class="form-row mb-4">
-              <input type="text" name="name" class="form-control" placeholder="Your FullName">
+              <input type="text" name="name" class="form-control" placeholder="Sender FullName">
               @error('name')
               {{$message}}
               @enderror
             </div>
 
             <div class="form-row mb-4">
-              <input type="email" name="email" class="form-control" placeholder="Email">
+              <input type="email" name="email" class="form-control" placeholder="Sender Email">
             </div>
             <div class="form-row mb-4">
-              <input type="number" name="phone" class="form-control" placeholder="Phone">
+              <input type="number" name="phone" class="form-control" placeholder="Sender Phone">
             </div>
             <div class="form-row mb-4">
               <input type="text" name="pickup" id="pickup" class="form-control txtPlaces"

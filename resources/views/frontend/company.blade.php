@@ -152,11 +152,11 @@
                                                                     <label class="mr-2 pr-1" for="regular"><input
                                                                             required id="regular" rel='{{$route->id}}'
                                                                             type="radio" name="type" value="regular"
-                                                                            class="type" />Regular </label>
+                                                                            class="type" />Regular (sameday delivery) </label>
                                                                     <label for="express"><input id="express"
                                                                             class='type' rel='{{$route->id}}'
                                                                             type="radio" name="type"
-                                                                            value="express" />Express </label>
+                                                                            value="express" />Express (instant delivery) </label>
                                                                 </div>
                                                             </div>
                                                             <div class="form-row mb-4" id="amountCont">
@@ -211,7 +211,7 @@
                                                         <div class="form-row">
                                                             <div class="col">
                                                                 <div class="center-head">
-                                                                    <p class="bg-light-gray txt-orange">Your Personal
+                                                                    <p class="bg-light-gray txt-orange">Sender
                                                                         Details</p>
                                                                 </div>
                                                             </div>
@@ -349,16 +349,17 @@
                         <div class="col-12 mb-4">
                             <div class="d-flex">
                                 <label>Delivery Type</label><br>
-
+                                 
+                                
                             </div>
                             <div class="d-flex justify-content-between w-50 align-items-center">
                                 <label class="mr-2 pr-1" for="regular-0">
                                     <input id="regular-0" rel="0" type="radio" name="type" value="regular"
-                                        class='type' />Regular
+                                        class='type' />Regular (sameday delivery)
                                 </label>
                                 <label for="express-0">
                                     <input id="express-0" class='type' rel="0" type="radio" name="type"
-                                        value="express" />Express </label>
+                                        value="express" />Express (instant delivery) </label>
                             </div>
                         </div>
 
@@ -409,7 +410,7 @@
                     <div class="form-row">
                         <div class="col">
                             <div class="center-head">
-                                <p class="bg-light-gray txt-orange">Your Personal
+                                <p class="bg-light-gray txt-orange">Sender
                                     Details</p>
                             </div>
                         </div>
