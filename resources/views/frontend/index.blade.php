@@ -99,19 +99,12 @@
           <!-- Free Quote From -->
           <form action="{{route('frontend.result')}}" method="get" novalidate="novalidate" class="col rounded-field">
             @csrf
-            <div class="form-row mb-4">
-              <input type="text" name="name" class="form-control" placeholder="Sender FullName">
-              @error('name')
-              {{$message}}
-              @enderror
-            </div>
+            
 
             <div class="form-row mb-4">
-              <input type="email" name="email" class="form-control" placeholder="Sender Email">
+              <input type="email" name="email" class="form-control" placeholder="Your Email">
             </div>
-            <div class="form-row mb-4">
-              <input type="number" name="phone" class="form-control" placeholder="Sender Phone">
-            </div>
+            
             <div class="form-row mb-4">
               <input type="text" name="pickup" id="pickup" class="form-control txtPlaces"
                 placeholder="Enter Pickup Location">
@@ -135,7 +128,7 @@
               <div class="form-row mb-1">
                 <label rel="more-destination" class='d-flex justify-content-between more'>
                   <input type="checkbox" rel="more-destination"><small class="ml-3 more"
-                    rel="more-destination"><strong>Provide more information on pickup location ?</strong></small>
+                    rel="more-destination"><strong>Provide more information on delivery location ?</strong></small>
                 </label>
               </div>
             </div>
@@ -452,16 +445,3 @@
   @endpush
 
   @endsection
-
-
-  {{-- </head>
-
-  <body>
-    <br>
-    Basic example for using the Distance Matrix.<br><br>
-    Origin: <input id="orig" type="text" style="width:35em"><br><br>
-    Destination: <input id="dest" type="text" style="width:35em"><br><br>
-    Distance: <input id="dist" type="text" style="width:35em">
-  </body>
-
-  </html> --}}

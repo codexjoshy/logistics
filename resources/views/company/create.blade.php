@@ -84,7 +84,7 @@
                     @endif
                     @if (!$verified && $user->company && $user->company->cac)
                         <div class="my-4">
-                            <a target="_blank" href="{{Storage::url(optional($user->company)->cac)}}">View Uploaded CAC</a>
+                            <a target="_blank" href="{{Storage::url(optional($user->company)->cac)}}">View Uploaded Document</a>
                         </div>
                         
                     @endif

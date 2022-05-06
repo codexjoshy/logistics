@@ -86,6 +86,8 @@
               {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
               <a target="_blank" href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
               <a target="_blank" href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>
+              <a target="_blank" href="https://www.instagram.com/invites/contact/?i=827jpvt7cs7g&utm_content=mjo8noc">
+              <i class="icofont-instagram"></i></a>
             </div>
             <!-- Topbar Social Icons End -->
 
@@ -260,13 +262,14 @@
           
           <h3 class="footer-heading">We're Social</h3>
           <div class="social-icons">
-            <a href="https://m.facebook.com/booklogistic-202950091754381/"><i class="icofont-facebook"></i></a>
+            <a target="_blank" href="https://m.facebook.com/booklogistic-202950091754381/"><i class="icofont-facebook"></i></a>
             {{-- <a href="#"><i class="icofont-twitter"></i></a> --}}
-            <a href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
-            <a href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>
-            <a href="https://www.instagram.com/invites/contact/?i=827jpvt7cs7g&utm_content=mjo8noc">
+            <a target="_blank" href="https://wa.me/message/WBXVFFUUUMIZJ1"><i class="icofont-whatsapp"></i></a>
+            <a target="_blank" href="mailto:support@booklogistic.com"><i class="icofont-google-plus"></i></a>
+            <a target="_blank" href="https://www.instagram.com/invites/contact/?i=827jpvt7cs7g&utm_content=mjo8noc">
               <i class="icofont-instagram"></i></a>
           </div>
+          
         </div>
         <!-- Column First -->
 
@@ -398,7 +401,7 @@
                             <label>Delivery Type</label><br>
 
                           </div>
-                          <div class="d-flex justify-content-between w-50 align-items-center">
+                          <div class="d-flex justify-content-between w-100 align-items-center">
                             <label for="regular" class="mr-2 pr-1">
                               <input required id="regular" rel="0"  type="radio" name="type"
                                 value="regular" class='type' />Regular (sameday delivery) </label>
@@ -417,6 +420,24 @@
                             placeholder="Amount">
                         </div>
                       </div>
+                      {{-- sender --}}
+                      <div class="form-row mb-4">
+                        <div class="col">
+                          <input required value="{{ old('name') }}" type="text" name="name"
+                            class="form-control mb-3" placeholder="Sender Name">
+                          @error('name')
+                          {{ $message }}
+                          @enderror
+                        </div>
+                        <div class="col">
+                          <input required value="{{ old('phone') }}" type="number" name="phone" class="form-control"
+                            placeholder="Sender Phone">
+                          @error('phone')
+                          {{ $message }}
+                          @enderror
+                        </div>
+                      </div>
+                      {{--receiver --}}
                       <div class="form-row mb-4">
                         <div class="col">
                           <input required value="{{ old('recieverName') }}" type="text" name="recieverName"
@@ -462,21 +483,17 @@
                         </div>
                       </div>
 
-                      <div class="form-row">
+                      {{--<div class="form-row">
                         <div class="col">
-                          <div class="center-head"><span class="bg-light-gray txt-orange">Your Personal
+                          <div class="center-head"><span class="bg-light-gray txt-orange">Sender
                               Details</span>
                           </div>
                         </div>
-                      </div>
+                      </div>--}}
                       <div class="form-row mb-4">
                         <div class="col">
-                          <input required value="{{ request()->name }}" type="text" name="name"
-                            class="form-control mb-3" placeholder="Your Name">
-                          <input required value="{{ request()->email }}" type="email" name="email"
+                          <input hidden required value="{{ request()->email }}" type="email" name="email"
                             class="form-control mb-3" placeholder="Email">
-                          <input required="required" value="{{ request()->phone }}" type="number" name="phone" class="form-control"
-                            placeholder="Phone Number">
                         </div>
 
                       </div>

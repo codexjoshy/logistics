@@ -44,7 +44,7 @@
             <h1 class="heading-main">
                 {{-- <span>Book </span> --}}
                 @if ($company->logo)
-                <span><img style="width:50px;height:50px;border-radius:25px" src="{{Storage::url($company->logo)}}"
+                <span><img style="width:100px;height:100px;border-radius:50px" src="{{Storage::url($company->logo)}}"
                         alt="logo" /></span>
                 @endif
                 {{$company->company_name}} Logistics Company
@@ -148,7 +148,7 @@
 
                                                                 </div>
                                                                 <div
-                                                                    class="d-flex justify-content-between w-50 align-items-center">
+                                                                    class="d-flex justify-content-between w-100 align-items-center">
                                                                     <label class="mr-2 pr-1" for="regular"><input
                                                                             required id="regular" rel='{{$route->id}}'
                                                                             type="radio" name="type" value="regular"
@@ -167,6 +167,22 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                        {{-- sender --}}
+                                                        <div class="form-row mb-4">
+                                                            <div class="col col-sm-12">
+                                                                <input required value="{{old('name')}}" type="text"
+                                                                    name="name" class="form-control mb-3"
+                                                                    placeholder="Sender Name">
+                                                            </div>
+                                                            <div class="col col-sm-12">
+                                                                <input required value="{{old('phone')}}" type="number"
+                                                                    name="phone" class="form-control col-sm-12"
+                                                                    placeholder="Sender Phone Number">
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        
+                                                        
                                                         <div class="form-row mb-4">
                                                             <div class="col">
                                                                 <input required type="text" name="recieverName"
@@ -196,14 +212,11 @@
                                                         <div class="form-row mb-4">
                                                             <div class="col">
                                                                 <label>Item Description</label>
-                                                                <textarea rows="7" name="description"
-                                                                    class="form-control"
-                                                                    placeholder="Item Description"></textarea>
+                                                                <textarea rows="7" name="description" class="form-control"placeholder="Item Description"></textarea>
                                                             </div>
                                                             <div class="col">
                                                                 <label>Delivery Note</label>
-                                                                <textarea rows="7" placeholder="Delievery Note"
-                                                                    class="form-control" name="note"></textarea>
+                                                                <textarea rows="7" placeholder="Delievery Note" class="form-control" name="note"></textarea>
                                                             </div>
 
                                                         </div>
@@ -211,22 +224,18 @@
                                                         <div class="form-row">
                                                             <div class="col">
                                                                 <div class="center-head">
-                                                                    <p class="bg-light-gray txt-orange">Sender
+                                                                    <p class="bg-light-gray txt-orange">Your
                                                                         Details</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="form-row mb-4">
                                                             <div class="col">
-                                                                <input required value="{{request()->name}}" type="text"
-                                                                    name="name" class="form-control mb-3"
-                                                                    placeholder="Your Name">
+                                                               
                                                                 <input required value="{{request()->email}}"
                                                                     type="email" name="email" class="form-control mb-3"
                                                                     placeholder="Email">
-                                                                <input required value="{{request()->phone}}" type="text"
-                                                                    name="phone" class="form-control"
-                                                                    placeholder="Phone Number">
+
                                                             </div>
 
 
@@ -253,8 +262,8 @@
             </div>
             @empty
             <div class="col col-12">
-                <h3 class="text-center">Hi There is currently no route attached to this company</h3>
-                <p class="txt-blue text-center mt-5">Click the button below to make a request</p>
+                <p class="text-center">Hi! There is  no route at the moment</p>
+                <h4 class="text-center mt-5"><strong class="text-warning">Fill the Form below  to make a request</strong> </h4>
                 <div class="d-flex align-items-center justify-content-center mt-5">
 
                 </div>
@@ -277,7 +286,7 @@
 
             </div> --}}
 
-            <div class="col-lg-4 wow fadeInRight" data-wow-duration="0" data-wow-delay="0.2s">
+            <div class="col-lg-4 wow fadeInRight d-none d-md-block" data-wow-duration="0" data-wow-delay="0.2s">
                 {{-- <h3 class="mb-4 fw-7 txt-blue">
                     <span class="fw-6 txt-orange">{{$company->company_name}}</span>
                 </h3> --}}
@@ -349,8 +358,7 @@
                         <div class="col-12 mb-4">
                             <div class="d-flex">
                                 <label>Delivery Type</label><br>
-                                 
-                                
+
                             </div>
                             <div class="d-flex justify-content-between w-50 align-items-center">
                                 <label class="mr-2 pr-1" for="regular-0">
@@ -372,11 +380,23 @@
                     </div>
                     <div class="form-row mb-4">
                         <div class="col">
+                             <input required value="{{old('name')}}" type="text" name="name" class="form-control mb-3"
+                                placeholder="Sender Name">
+                        </div>
+                        <div class="col">
+                            <input required value="{{old('phone')}}" type="number" name="phone" class="form-control"
+                                placeholder="Sender Phone">
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="form-row mb-4">
+                        <div class="col">
                             <input required type="text" name="recieverName" class="form-control"
                                 placeholder="Reciever Name">
                         </div>
                         <div class="col">
-                            <input required type="text" name="recieverPhone" class="form-control"
+                            <input required type="number" name="recieverPhone" class="form-control"
                                 placeholder="Reciever Phone">
                         </div>
                     </div>
@@ -397,10 +417,10 @@
 
                     <div class="form-row mb-4">
                         <div class="col">
-                            <textarea rows="5" name="description" class="form-control"
-                                placeholder="Item Description"></textarea>
+                            <textarea rows="5" name="description" class="form-control"placeholder="Item Description"></textarea>
                         </div>
-
+                    </div>
+                    <div class="form-row mb-4">
                         <div class="col">
                             <textarea rows="5" placeholder="Delievery Note" class="form-control" name="note"></textarea>
                         </div>
@@ -410,19 +430,17 @@
                     <div class="form-row">
                         <div class="col">
                             <div class="center-head">
-                                <p class="bg-light-gray txt-orange">Sender
+                                <p class="bg-light-gray txt-orange">Your
                                     Details</p>
                             </div>
                         </div>
                     </div>
                     <div class="form-row mb-4">
                         <div class="col">
-                            <input required value="{{old('name')}}" type="text" name="name" class="form-control mb-3"
-                                placeholder="Your Name">
+                           
                             <input required value="{{old('email')}}" type="email" name="email" class="form-control mb-3"
-                                placeholder="Email">
-                            <input required value="{{old('phone')}}" type="text" name="phone" class="form-control"
-                                placeholder="Phone Number">
+                                placeholder="Your Email">
+                            
                         </div>
 
                     </div>

@@ -142,7 +142,7 @@ class CompanyController extends Controller
      */
     public function update(UpdateCompanyProfileRequest $request, Company $company)
     {
-        [ "company_email"=>$companyEmail, 
+         [ "company_email"=>$companyEmail, 
             "company_phone"=>$companyPhone, "username"=>$username, "address"=>$address,
             "state"=>$state,
             "lga"=>$lga,]= $request->validated();

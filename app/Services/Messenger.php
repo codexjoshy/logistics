@@ -22,7 +22,7 @@ class Messenger implements SmsInterface
 
    private function send(int $to, string $message, string $channel = 'dnd')
    {
-      $response  = Http::post('https://termii.com/api/sms/send', [
+      $response  = Http::post('https://api.ng.termii.com/api/sms/send', [
          "to" => $to,
          "from" => $this->_from,
          "sms" => $message,

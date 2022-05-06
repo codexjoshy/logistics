@@ -29,7 +29,7 @@
                 <i class="icofont-whatsapp"></i> <a target="_blank" href="https://wa.me/message/WBXVFFUUUMIZJ1">+234 (0) 817 500 9200</a> 
             </div>
             <div class="text-nowrap d-flex align-items-start items">
-                <i class="icofont-facebook"></i><a target="_blank" href="https://m.facebook.com/booklogistic-202950091754381/">booklogistic</a> 
+                <i class="icofont-facebook"></i><a target="_blank" href="https://m.facebook.com/booklogistic-202950091754381/">Booklogistic</a> 
             </div>
           </div>
           <!-- Contact Detail Left -->

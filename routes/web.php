@@ -78,10 +78,6 @@ Route::middleware(['auth'])->group(function () {
         Route::post('admin/price/store', [PriceController::class, 'store'])->name('admin.option.price.store');
     });
 
-    Route::domain("{username}".config('app.url'))->group(function (){
-        
-    });
-
 });
 
 
@@ -102,6 +98,7 @@ Route::get('operator/{name}', [FrontendController::class, 'requestCompany'])->na
 Route::post('request/route/{route}', [PlaceRequestController::class, 'store'])->name('make.request');
 Route::post('request/', [PlaceRequestController::class, 'sendRequest'])->name('send.request');
 
+Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
 Route::post('api/order/check/order', [AjaxController::class, 'checkOrder'])->name('check.order');
 Route::post('api/order/check/order/otp', [AjaxController::class, 'checkOrderOtp'])->name('check.order.otp');
 Route::post('api/generate/price', [AjaxController::class, 'getPriceByDistance'])->name('generate.price');

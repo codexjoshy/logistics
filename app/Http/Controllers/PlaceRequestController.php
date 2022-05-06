@@ -22,6 +22,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 
 class PlaceRequestController extends Controller
 {
@@ -79,12 +80,12 @@ class PlaceRequestController extends Controller
             ]);
 
             $customerOtp = $this->orderService->otpGenerator();
-            $receiverOtp = $this->orderService->otpGenerator(); 
+            $receiverOtp = $this->orderService->otpGenerator();
             $rider = Rider::findOrFail($request->rider);
             $order->update(['customer_otp'=> strtolower($customerOtp),'reciever_otp'=> strtolower($receiverOtp)]);
 
             $riderPhone = $rider->user->phone;
-            $companyName = $rider->company->company_name;
+            $company = $rider->company->name;
             $pickup = $placeRequest->pickup_address;
             $destination = $placeRequest->delievery_address;
  
@@ -104,20 +105,34 @@ class PlaceRequestController extends Controller
             }
             
             $type = $placeRequest->type;
-            $SendSms = new LogisticMsgs($senderInfo, $recipient, $riderInfo, $companyName);
-            //to riders 
-            $SendSms->sendOTP('rider', '0', $amount, $pickupInfo, $destinationInfo, $order->code, $type);
 
-            $SendSms->sendOTP('receiver', $receiverOtp, $placeRequest->payment != 'sender' ? $amount : null, $pickupInfo, $destinationInfo,  $order->code, $type);
+
+            $SendSms = new LogisticMsgs($senderInfo, $recipient, $riderInfo, $company);
+            //to riders 
+            $toRider = $SendSms->sendOTP('rider', '0', $amount, $pickupInfo, $destinationInfo, $order->code, $type);
+            // if ($toRider['error']) {
+            //     throw new Exception($toRider['error']);
+            // }
+            $toReci = $SendSms->sendOTP('receiver', $receiverOtp, $placeRequest->payment != 'sender' ? $amount : null, $pickupInfo, $destinationInfo,  $order->code, $type);
+            // if ($toReci['error']) {
+            //     throw new Exception($toReci['error']);
+            // }
             
-            $SendSms->sendOTP('sender', $customerOtp, $placeRequest->payment == 'sender' ? $amount : null, $pickupInfo, $destinationInfo, $order->code, $type);
-               
-            //debit company for accepting
+            $toSender = $SendSms->sendOTP('sender', $customerOtp, $placeRequest->payment == 'sender' ? $amount : null, $pickupInfo, $destinationInfo, $order->code, $type);
+            // if ($toSender['error']) {
+            //     throw new Exception($toSender['error']);
+            // }           
+
             (new TransactionService)->debit($user->id, $requestAmount, "Debit for Order {$order->code}");
             DB::commit();
+            //debit company for accepting
             $riderMsg = "Dear rider, you have been assigned to pick an order for delivery. Click the link below to view details";
             $rider->user->notify(new RequestAcceptedNotification($riderMsg, '/dashboard'));
-            $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. You can use the order id  and otp to track your delivery request. Order ID : order-{$order->code} OTP code:$customerOtp. booklogistic.com/#track";
+            $senderMsg = "Dear Customer,  {$riderInfo['name']}({$riderInfo['phone']}) has been assigned to pick your item for delivery. 
+            You can use the order id  and otp to track your delivery request.
+            Order ID : order-{$order->code} 
+            OTP code:$customerOtp
+            booklogistic.com/#track";
             $sender->notify(new RequestAcceptedNotification($senderMsg, '/#track'));
         } catch (\Throwable $th) {
             DB::rollback();
@@ -134,7 +149,7 @@ class PlaceRequestController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Route $route)
+     public function store(Request $request, Route $route)
     {
         $request->validate([
             "pickup"=> 'required|string',
@@ -173,6 +188,8 @@ class PlaceRequestController extends Controller
 
         $user = $company->user;
         $user->notify(new OrderRequestedNotification);
+        Notification::route('mail', "poolrequest@booklogistic.com")
+            ->notify(new OrderRequestedNotification);
         return redirect()->route('success')->with('success', 'Your request was sent successfully. You will be notified shortly with the details you provided.');
     }
 
@@ -226,14 +243,15 @@ class PlaceRequestController extends Controller
                 $placeRequest->update(['company_id' => $request->companyId]);
                 $company = Company::find($request->companyId);
                 $user = $company->user;
-                // send mail to company
                 $user->notify(new OrderRequestedNotification);
+                
                 // send sms to company
                 $senderInfo = ["name"=> $user->name, "phone"=> displayPhone($user->phone)];
                 $recipient = ["name"=> $recieverName, "phone"=> displayPhone($recieverPhone)];
                 $SendSms = new LogisticMsgs($senderInfo, $recipient);
                 $SendSms->companyBooked($company->company_phone);
             }
+
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();

@@ -45,9 +45,9 @@
                                 name="password_confirmation" required />
             </div>
             <div class="d-flex justify-content-center mt-4">
-                {{-- <x-button class="ml-4">
+                 <x-button class="ml-4">
                     {{ __('Register') }}
-                </x-button> --}}
+                </x-button> 
             </div>
 
             <div class="d-flex justify-content-between mt-4">

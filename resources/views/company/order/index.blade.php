@@ -11,6 +11,7 @@
                     <th>Tracking ID</th>
                     <th>Pickup Address</th>
                     <th>Delivery Address</th>
+                    <th>Amount</th>
                     {{-- <th>Customer Name</th>
                     <th>Customer Phone</th> --}}
                     <th>Rider Name</th>
@@ -34,6 +35,7 @@
                         <td>#order-{{$code}}</td>
                         <td>{{$routeRequest->pickup_address}}</td>
                         <td>{{$routeRequest->delievery_address}}</td>
+                        <td>{{$routeRequest->amount}}</td>
                         {{-- <td>{{$routeRequest->customer->name}}</td>
                         <td>{{$routeRequest->customer->phone}}</td> --}}
                         <td>{{$order->rider->user->name}}</td>

@@ -29,9 +29,9 @@
                     <x-base.form-group label="Customer Name" required class="col-md-4">
                         <x-base.input disabled required :value="$canView? $placeRequest->customer->name : '' " name="rider_name"/>
                     </x-base.form-group>
-                    <x-base.form-group label="Customer Email" required class="col-md-4">
+                    {{-- <x-base.form-group label="Customer Email" required class="col-md-4">
                         <x-base.input disabled required :value="$canView? $placeRequest->customer->email : '' " name="rider_email" />
-                    </x-base.form-group>
+                    </x-base.form-group> --}}
                     <x-base.form-group label="Customer Phone Number" required class="col-md-4">
                         @if ($canView)
                         <a href="tel:{{$placeRequest->customer->phone}}" class="fa fa-phone">Call</a>
@@ -75,15 +75,11 @@
                     </x-base.form-group>
 
                     <x-base.form-group label="Item Description" required class="col-md-4">
-                        <x-base.textarea disabled required name="rider_phone">
-                            {{ $canView ? $placeRequest->description : ''}}
-                        </x-base.textarea>
+                        <x-base.textarea disabled required name="rider_phone">{{$canView?$placeRequest->description:''}}</x-base.textarea>
                    
                     </x-base.form-group>
                     <x-base.form-group label="Delievery Note" required class="col-md-4">
-                        <textarea class="form-control" name="note" disabled>
-                            {{ $canView ? $placeRequest->note : ''}}
-                        </textarea>
+                        <textarea class="form-control" name="note" disabled>{{$canView?$placeRequest->note:''}}</textarea>
                     </x-base.form-group>
                     
                 </div>

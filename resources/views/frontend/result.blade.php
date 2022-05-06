@@ -46,7 +46,7 @@ $allIds = [];
             <div class="col-sm-12 d-flex">
                 <h3 class="h3-sm fw-6 txt-blue mb-4 col-md-6">Directions</h3>
                 <p>
-                    Didn't find any what you're looking for ?
+                    Didn't find the route you're looking for ?
                     <a href="#" role="button" data-toggle="modal" data-target="#request_popup"
                         class="mr-2 mb-3 btn-theme bg-orange"> Make Request</a>
                 </p>
@@ -149,10 +149,8 @@ $allIds = [];
                                                                         class="form-control"
                                                                         placeholder="more details delivery location">
                                                                 </div>
-
                                                                 @endif
                                                             </div>
-
                                                         </div>
 
                                                         <div class="form-row mb-4">
@@ -164,10 +162,9 @@ $allIds = [];
                                                             <div class="col-12 mb-4">
                                                                 <div class="d-flex">
                                                                     <label>Delivery Type</label><br>
-
                                                                 </div>
                                                                 <div
-                                                                    class="d-flex justify-content-between w-50 align-items-center">
+                                                                    class="d-flex justify-content-between w-100 align-items-center">
                                                                     <label class="mr-2 pr-1" for="regular"><input
                                                                             required id="regular" rel='{{$route->id}}'
                                                                             type="radio" name="type" value="regular"
@@ -187,6 +184,22 @@ $allIds = [];
                                                                     placeholder="Amount">
                                                             </div>
                                                         </div>
+                                                        
+                                                        
+                                                        {{-- sender --}}
+                                                        <div class="form-row mb-4">
+                                                            <div class="col col-sm-12">
+                                                                <input required value="{{request()->name}}" type="text"
+                                                                    name="name" class="form-control mb-3"
+                                                                    placeholder="Sender Name">
+                                                            </div>
+                                                            <div class="col col-sm-12">
+                                                                <input required value="{{request()->phone}}" type="number"
+                                                                    name="phone" class="form-control col-sm-12"
+                                                                    placeholder="Sender Phone ">
+                                                            </div>
+                                                        </div>
+                                                        {{-- receiver --}}
                                                         <div class="form-row mb-4">
                                                             <div class="col col-sm-12">
                                                                 <input required type="text" name="recieverName"
@@ -245,21 +258,18 @@ $allIds = [];
                                                         <div class="form-row">
                                                             <div class="col">
                                                                 <div class="center-head">
-                                                                    <p class="bg-light-gray txt-orange">Sender Details</p>
+                                                                    <p class="bg-light-gray txt-orange">Your 
+                                                                        Details</p>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="form-row mb-4">
                                                             <div class="col">
-                                                                <input required value="{{request()->name}}" type="text"
-                                                                    name="name" class="form-control mb-3"
-                                                                    placeholder="Your Name">
+
                                                                 <input required value="{{request()->email}}"
                                                                     type="email" name="email" class="form-control col-sm-12 mb-3"
                                                                     placeholder="Email">
-                                                                <input required value="{{request()->phone}}" type="number"
-                                                                    name="phone" class="form-control col-sm-12"
-                                                                    placeholder="Phone Number">
+
                                                             </div>
                                                         </div>
                                                         <div class="form-row">
@@ -284,12 +294,12 @@ $allIds = [];
             </div>
             @empty
             <div class="col col-12">
-                <h3 class="text-center">Hi {{request()->name}} We were unable to find a dispatcher for you that goes
-                    through your routes at this time.</h3>
-                <p class="txt-blue text-center mt-5">Click the button below to make a request</p>
+                <p class="text-center">Hi {{request()->name}} We were unable to find a dispatcher for you that goes
+                    through your routes at this time.</p>
+                <h4 class="txt-blue text-center mt-5">Click the button below to Fill the Request Form</h4>
                 <div class="d-flex align-items-center justify-content-center mt-5">
                     <a href="#" role="button" data-toggle="modal" data-target="#request_popup"
-                        class="mr-2 mb-3 btn-theme bg-orange"> Request Now</a>
+                        class="mr-2 mb-3 btn-theme bg-orange">View Request Form</a>
                 </div>
             </div>
             @endforelse

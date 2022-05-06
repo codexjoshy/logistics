@@ -38,15 +38,15 @@ class FrontendController extends Controller
         // $routes = RouteDirection::hydrate($routes);
         // $routes = $routes->map(function($route){
         //     $myRoute = Route::where('id', $route->route_id)->first();
-        //    return $route->setRelation('route', $myRoute);
+        //    return $route->setRelation('route', $myRoute);O
         // })->pluck('route');
-        //    $routes =  RouteDirection::with('route')->where('name', 'like', "%$pickup%")
-        //         ->orWhere('name', 'like', "%$destination%")
-        //         ->whereBetween('created_at', [$startDay, $endDay])
-        //         ->get()
-        //         ->pluck('route');
-
-        $routes = DB::select(DB::raw("SELECT * FROM route_directions WHERE  MATCH(name) AGAINST ('$pickup'  IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)   AND  created_at between '$startDay' AND '$endDay'" ));
+    //   $routes =  RouteDirection::with('route')->where('name', 'like', "%$pickup%")
+    //         ->orWhere('name', 'like', "%$destination%")
+    //         ->whereBetween('created_at', [$startDay, $endDay])
+    //         ->get()
+    //         ->pluck('route');
+    
+    $routes = DB::select(DB::raw("SELECT * FROM route_directions WHERE  MATCH(name) AGAINST ('$pickup'  IN NATURAL LANGUAGE MODE WITH QUERY EXPANSION)   AND  created_at between '$startDay' AND '$endDay'" ));
         $routes = RouteDirection::hydrate($routes);
         $routes = $routes->map(function($route){
             $myRoute = Route::where('id', $route->route_id)->first();
@@ -66,16 +66,19 @@ class FrontendController extends Controller
             "message"=>'required|string'
         ]);
         try {
-            Notification::send(new ContactUsNotification($request->email, $request->phone, $request->message, $request->name));
+            Notification::route('mail', 'support@booklogistic.com')
+            ->notify(new ContactUsNotification($request->email, $request->phone, $request->message, $request->name));
         } catch (\Throwable $th) {
             return back()->with('error', 'Sorry we were unable to send a message at this time '. $th->getMessage());
         }
        
+        
         return back()->with('success', 'Thank you for contacting us. We will contact you with details provided');
     }
-    public function requestCompany(Request $request, string $name)
+     public function requestCompany(Request $request, string $name)
     {
         if(!$name) return redirect()->route('frontend.index')->with('error', 'Sorry we could not find the link you requested. Please try again with a different link.');
+        
         // $request->validate(['name'=> 'required', 'string','exists:companies,company_name']);
         $companyName = explode('-', $name);
         $companyName = implode(' ', $companyName);

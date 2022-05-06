@@ -21,10 +21,10 @@
                         <template x-for="(dailyRoute, index) in form.dailyRoutes" :key="index">
                             <div class="row">
                                 <x-base.form-group label="From (Distance in KM)" class="col-md-3">
-                                    <x-base.input x-bind:value="`${dailyRoute.from}`" x-bind:id="`route-${index}`" x-bind:name="`distance-${index}[]`" type="text" placeholder="Enter Start Price"  />
+                                    <x-base.input x-bind:value="`${dailyRoute.from}`" x-bind:id="`route-${index}`" x-bind:name="`distance-${index}[]`" type="text" placeholder="Enter distance e.g 5"  />
                                 </x-base.form-group>
                                 <x-base.form-group label="To (Distance in KM)" class="col-md-3">
-                                    <x-base.input x-bind:value="`${dailyRoute.to}`" x-bind:id="`route-${index}`"  x-bind:name="`distance-${index}[]`" type="text" placeholder="Enter End Price"  />
+                                    <x-base.input x-bind:value="`${dailyRoute.to}`" x-bind:id="`route-${index}`"  x-bind:name="`distance-${index}[]`" type="text" placeholder="Enter distance e.g 10"  />
                                 </x-base.form-group>
                                 <x-base.form-group label="Amount (regular)" class="col-md-3">
                                     <x-base.input x-bind:value="`${dailyRoute.regular}`" x-bind:id="`route-${index}`"  x-bind:name="`distance-${index}[]`" type="text" placeholder="Enter Amount"  />

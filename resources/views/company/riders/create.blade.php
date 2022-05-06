@@ -27,7 +27,7 @@
                     <x-base.form-group label="Rider Phone Number" required class="col-md-4">
                         <x-base.input required :value="old('rider_phone')" name="rider_phone" />
                     </x-base.form-group>
-                    <x-base.form-group label="Rider Unique Identification" required class="col-md-4">
+                    <x-base.form-group label="Rider Bike Plate Number" required class="col-md-4">
                         <x-base.input required :value="old('rider_uid')" name="rider_uid"/>
                     </x-base.form-group>
                 </div>

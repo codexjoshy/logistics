@@ -41,9 +41,9 @@
                     </x-base.form-group>
                     <x-base.form-group label="How many route do you want to create?" class="col-12" >
                         <div class="row d-flex">
-                            <input id="routeNo" type="number" class="form-control col-3" placeholder="Enter Number of route" />
+                            <input id="routeNo" type="number" class="form-control col-3" placeholder="E.g 3" />
                             <x-base.button type="button" class="btn-primary col-1"  id="createRoute">
-                                <i class="fa fa-plus"></i>
+                                <i class="fa fa-plus"> Enter</i>
                             </x-base.button>
 
                         </div>
